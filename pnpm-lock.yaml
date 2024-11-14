@@ -117,9 +117,6 @@ importers:
       '@types/react-dom':
         specifier: ^18.2.7
         version: 18.3.1
-      '@types/react-scroll-to-bottom':
-        specifier: ^4.2.3
-        version: 4.2.5
       '@typescript-eslint/eslint-plugin':
         specifier: ^6.7.4
         version: 6.21.0(@typescript-eslint/parser@6.21.0(eslint@8.57.1)(typescript@5.6.3))(eslint@8.57.1)(typescript@5.6.3)
@@ -1239,9 +1236,6 @@ packages:
 
   '@types/react-dom@18.3.1':
     resolution: {integrity: sha512-qW1Mfv8taImTthu4KoXgDfLuk4bydU6Q/TkADnDWWHwi4NX4BR+LWfTp2sVmTqRrsHvyDDTelgelxJ+SsejKKQ==}
-
-  '@types/react-scroll-to-bottom@4.2.5':
-    resolution: {integrity: sha512-gYMMxxhphzTNfKc4NIkEgu4XRiQjfj/6R7QK10Igz8jOUPNXBLSnK3RS7ofsNWnJDEgpLkNOwSLuASASiGsfHQ==}
 
   '@types/react@18.3.12':
     resolution: {integrity: sha512-D2wOSq/d6Agt28q7rSI3jhU7G6aiuzljDGZ2hTZHIkrTLUI+AF3WMeKkEZ9nN2fkBAlcktT6vcZjDFiIhMYEQw==}
@@ -5251,10 +5245,6 @@ snapshots:
       '@types/react': 18.3.12
 
   '@types/react-dom@18.3.1':
-    dependencies:
-      '@types/react': 18.3.12
-
-  '@types/react-scroll-to-bottom@4.2.5':
     dependencies:
       '@types/react': 18.3.12
 

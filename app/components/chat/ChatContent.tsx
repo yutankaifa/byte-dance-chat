@@ -3,29 +3,35 @@ import { useEffect, useRef, useState } from "react";
 import { MessageInter } from "~/types";
 import Markdown from "~/components/chat/Markdown";
 import FileCard from "~/components/chat/FileCard";
-import { throttle } from "lodash-es";
 
 export default function ChatContent() {
   const store = useChatStore();
   const [messages, setMessages] = useState<MessageInter[]>([]);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const timer = useRef(null);
 
   useEffect(() => {
     setMessages(store.messages);
   }, [store]);
 
   useEffect(() => {
-    ScrollToBottom();
+    if (timer.current) return;
+    timer.current = setTimeout(() => {
+      ScrollToBottom();
+      clearTimeout(timer.current);
+      timer.current = null;
+    }, 800);
   }, [messages]);
 
-  const ScrollToBottom = throttle(() => {
+  const ScrollToBottom = () => {
+    console.log("111111");
     if (scrollRef.current) {
       window.scrollTo({
         top: scrollRef.current.scrollHeight,
         behavior: "smooth",
       });
     }
-  }, 1200);
+  };
   return (
     <div ref={scrollRef} className="overflow-y-auto h-full">
       {messages.map((item, index) => (
