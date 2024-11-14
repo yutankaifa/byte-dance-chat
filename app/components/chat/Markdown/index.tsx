@@ -1,7 +1,4 @@
-/* eslint-disable react/prop-types */
-
 import { cn } from "~/lib/utils";
-// import "github-markdown-css";
 import { FC, ReactNode, useEffect, useMemo, useState } from "react";
 import pkg from "react-copy-to-clipboard";
 import ReactMarkdown from "react-markdown";

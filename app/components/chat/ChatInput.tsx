@@ -60,14 +60,18 @@ export default function ChatInput() {
       stream: true,
       messages: [...store.messages, { role: "user", content: text || content }],
     };
-    const res = await fetch("/api", {
-      method: "POST",
-      headers: {
-        Authorization: "Bearer " + "259ffcc9-bb80-48bd-9bb9-196bfe8455eb",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(json),
-    });
+    // https://ark.cn-beijing.volces.com/api/v3/chat/completions
+    const res = await fetch(
+      "https://ark.cn-beijing.volces.com/api/v3/chat/completions",
+      {
+        method: "POST",
+        headers: {
+          Authorization: "Bearer " + "259ffcc9-bb80-48bd-9bb9-196bfe8455eb",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(json),
+      }
+    );
     // console.log("res", res);
     if (!res.ok) {
       const error = await res.text();
