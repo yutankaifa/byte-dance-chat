@@ -120,7 +120,7 @@ export default function ChatInput() {
     inputRef.current?.focus();
   };
   return (
-    <div className="fixed bottom-0 left-0 w-full p-4 bg-white">
+    <div className="fixed bottom-0 left-0 w-full pb-4 bg-white">
       <div className="max-w-screen-md mx-auto">
         <div className="flex flex-wrap my-3 gap-3">
           {fileInfos.map((item, index) => (

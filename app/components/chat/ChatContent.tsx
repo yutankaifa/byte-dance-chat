@@ -49,8 +49,8 @@ export default function ChatContent() {
                   <FileCard key={fileIndex} index={fileIndex} item={fileItem} />
                 ))}
               </div>
-              <div className="max-w-lg bg-blue-300 p-2 rounded-2xl">
-                <p className="text-white">{item.content}</p>
+              <div className="max-w-lg bg-gray-200 px-4 py-2 rounded-3xl">
+                <pre>{item.content}</pre>
               </div>
             </div>
           )}
