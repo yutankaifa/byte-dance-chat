@@ -8,14 +8,16 @@ export default function ChatContent() {
   const store = useChatStore();
   const [messages, setMessages] = useState<MessageInter[]>([]);
   const scrollRef = useRef<HTMLDivElement>(null);
-  const timer = useRef(null);
+  const timer = useRef<any>(null);
 
   useEffect(() => {
     setMessages(store.messages);
   }, [store]);
 
   useEffect(() => {
-    if (timer.current) return;
+    const distance =
+      window.innerHeight - (scrollRef.current?.scrollHeight || 0) - 100;
+    if (timer.current || distance > 0) return;
     timer.current = setTimeout(() => {
       ScrollToBottom();
       clearTimeout(timer.current);
@@ -24,7 +26,6 @@ export default function ChatContent() {
   }, [messages]);
 
   const ScrollToBottom = () => {
-    console.log("111111");
     if (scrollRef.current) {
       window.scrollTo({
         top: scrollRef.current.scrollHeight,
