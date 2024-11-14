@@ -1,6 +1,7 @@
 import mammoth from "mammoth";
 import { getPDFTextClient } from "~/utils/getPDFText.client";
 import { ChangeEvent } from "react";
+import { toast } from "sonner";
 
 export const allowFileList = [
   ".pdf",
@@ -27,7 +28,7 @@ export const FileToText = async (e: ChangeEvent<HTMLInputElement>) => {
     const fileName = selectedFile.name;
     const fileExtension = getFileExtension(fileName);
     if (!allowFileList.includes(fileExtension)) {
-      // toast.error('The file format is not supported')
+      toast.error("该文件格式暂不支持！");
     } else {
       return await handleFileExtractText(fileExtension, selectedFile);
     }

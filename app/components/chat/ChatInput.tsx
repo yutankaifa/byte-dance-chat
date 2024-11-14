@@ -1,6 +1,6 @@
 import { Button } from "../ui/button";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
-import { cn, parseSSEResponse } from "~/lib/utils";
+import { cn } from "~/lib/utils";
 import { toast } from "sonner";
 import { useChatStore } from "~/store";
 import { MessageInter } from "~/types";
@@ -15,6 +15,7 @@ import {
 import { allowFileList, FileInfoInter, FileToText } from "~/utils/fileToText";
 import { cloneDeep } from "lodash-es";
 import FileCard from "~/components/chat/FileCard";
+import { parseSSEResponse } from "~/utils/sse";
 
 export default function ChatInput() {
   const [content, setContent] = useState("");
@@ -61,17 +62,14 @@ export default function ChatInput() {
       messages: [...store.messages, { role: "user", content: text || content }],
     };
     // https://ark.cn-beijing.volces.com/api/v3/chat/completions
-    const res = await fetch(
-      "https://ark.cn-beijing.volces.com/api/v3/chat/completions",
-      {
-        method: "POST",
-        headers: {
-          Authorization: "Bearer " + "259ffcc9-bb80-48bd-9bb9-196bfe8455eb",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(json),
-      }
-    );
+    const res = await fetch("/api", {
+      method: "POST",
+      headers: {
+        Authorization: "Bearer " + "259ffcc9-bb80-48bd-9bb9-196bfe8455eb",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(json),
+    });
     // console.log("res", res);
     if (!res.ok) {
       const error = await res.text();
@@ -122,10 +120,7 @@ export default function ChatInput() {
     inputRef.current?.focus();
   };
   return (
-    <div
-      style={{ background: "rgba(255,255,255,.8)" }}
-      className="fixed bottom-0 left-0 w-full p-4"
-    >
+    <div className="fixed bottom-0 left-0 w-full p-4 bg-white">
       <div className="max-w-screen-md mx-auto">
         <div className="flex flex-wrap my-3 gap-3">
           {fileInfos.map((item, index) => (
@@ -134,19 +129,6 @@ export default function ChatInput() {
         </div>
         <div className="flex items-center gap-2">
           <div className="p-3 rounded-2xl bg-gray-100 flex items-center gap-2 flex-1">
-            <TextareaAutosize
-              ref={inputRef}
-              value={content}
-              className={cn(
-                "resize-none hover:resize overflow-x-hidden overflow-y-auto w-full outline-none text-sm bg-transparent leading-6 text-primary-text scrollbar-thin placeholder:text-gray-400"
-              )}
-              onChange={(e) => setContent(e.target.value)}
-              onKeyDown={onKeyDown}
-              minRows={2}
-              maxRows={5}
-              autoComplete="off"
-              placeholder={"发消息，输入或Shift+Enter换行"}
-            />
             <div className="flex items-center justify-center">
               <TooltipProvider>
                 <Tooltip>
@@ -165,13 +147,28 @@ export default function ChatInput() {
                     </label>
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p>Upload</p>
+                    <p>{"允许上传的文件格式有：" + allowFileList.join(",")}</p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
             </div>
+            <TextareaAutosize
+              ref={inputRef}
+              value={content}
+              className={cn(
+                "resize-none hover:resize overflow-x-hidden overflow-y-auto w-full outline-none text-sm bg-transparent leading-6 text-primary-text scrollbar-thin placeholder:text-gray-400"
+              )}
+              onChange={(e) => setContent(e.target.value)}
+              onKeyDown={onKeyDown}
+              minRows={1}
+              maxRows={5}
+              autoComplete="off"
+              placeholder={"发消息，输入或Shift+Enter换行"}
+            />
           </div>
-          <Button onClick={sendMessage}>{isLoading ? "回复中" : "发送"}</Button>
+          <Button disabled={isLoading} onClick={sendMessage}>
+            {isLoading ? "回复中" : "发送"}
+          </Button>
         </div>
       </div>
     </div>
