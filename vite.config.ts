@@ -23,6 +23,7 @@ export default defineConfig({
   ],
   server: {
     open: true,
+    host: "0.0.0.0",
     proxy: {
       "/api": {
         target: "https://ark.cn-beijing.volces.com/",
