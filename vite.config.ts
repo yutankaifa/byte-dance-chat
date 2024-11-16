@@ -26,9 +26,9 @@ export default defineConfig({
     host: "0.0.0.0",
     proxy: {
       "/api": {
-        target: "https://ark.cn-beijing.volces.com/",
+        target: "https://api.coze.cn/",
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, "api/v3/chat/completions"),
+        rewrite: (path) => path.replace(/^\/api/, ""),
       },
     },
   },

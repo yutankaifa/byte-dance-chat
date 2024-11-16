@@ -1,9 +1,21 @@
-import { FileInfoInter } from "~/utils/fileToText";
+export type object_string_type = "text" | "file" | "image";
+export type content_type = "object_string" | "text";
+type role = "user" | "assistant";
 
-type role = "user" | "assistant" | "system" | "tool";
+export interface FileInfoInter {
+  file_id?: string;
+  file_url?: string;
+  name: string;
+  base64?: string;
+}
 export interface MessageInter {
   role: role;
-  content: string;
+  text: string;
   files?: FileInfoInter[];
-  images?: string[];
+  images?: FileInfoInter[];
+}
+export interface MessageApiInter {
+  role: role;
+  content: string;
+  content_type: content_type;
 }
