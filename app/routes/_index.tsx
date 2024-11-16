@@ -12,7 +12,7 @@ export const meta: MetaFunction = () => {
 
 export default function Index() {
   return (
-    <div className="max-w-screen-md md:mx-auto mx-6">
+    <div className="max-w-screen-md md:mx-auto mx-3">
       <ChatPopup />
       <ChatContent key={"page-content"} type={"page"} />
       <ChatInput key={"page-input"} type={"page"} />

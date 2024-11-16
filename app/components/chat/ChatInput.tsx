@@ -240,10 +240,10 @@ export default function ChatInput({ type }: ChatContentType) {
     <div
       className={cn(
         "fixed left-0 w-full pb-4 bg-white",
-        type === "page" ? "bottom-0" : "top-0"
+        type === "page" ? "bottom-0" : "top-1"
       )}
     >
-      <div className="max-w-screen-md mx-auto bg-gray-100 p-3 rounded-3xl group">
+      <div className="max-w-screen-md mx-auto bg-gray-100 p-2 rounded-3xl group">
         {images.length > 0 && (
           <div className="flex flex-wrap m-3 gap-3">
             {images.map((item, index) => (

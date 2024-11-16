@@ -65,7 +65,7 @@ export default function ChatContent({ type }: ChatContentType) {
       {messages.map((item, index) => (
         <div className="my-3" key={index}>
           {item.role === "assistant" && (
-            <div className="flex justify-start group">
+            <div className="group">
               <div>
                 <Markdown>{item.text}</Markdown>
                 <div className="w-full hidden justify-end group-hover:flex">
