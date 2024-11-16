@@ -11,6 +11,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "~/components/ui/tooltip";
+import { cn } from "~/lib/utils";
 const { CopyToClipboard } = pkg;
 
 export default function ChatContent({ type }: ChatContentType) {
@@ -41,17 +42,17 @@ export default function ChatContent({ type }: ChatContentType) {
 
   const ScrollToBottom = () => {
     if (scrollRef.current) {
-      if (type == "page") {
-        window.scrollTo({
-          top: scrollRef.current.scrollHeight,
-          behavior: "smooth",
-        });
-      } else {
-        scrollRef.current.scrollTo({
-          top: scrollRef.current.scrollHeight,
-          behavior: "smooth",
-        });
-      }
+      // if (type == "page") {
+      //   window.scrollTo({
+      //     top: scrollRef.current.scrollHeight,
+      //     behavior: "smooth",
+      //   });
+      // } else {
+      scrollRef.current.scrollTo({
+        top: scrollRef.current.scrollHeight,
+        behavior: "smooth",
+      });
+      // }
     }
   };
   useEffect(() => {
@@ -60,8 +61,10 @@ export default function ChatContent({ type }: ChatContentType) {
     }
   }, [copied]);
   return (
-    <div ref={scrollRef} className="overflow-y-auto h-full w-full">
-      <div className="min-h-[20px]"></div>
+    <div
+      ref={scrollRef}
+      className={cn("overflow-y-auto flex-1", type === "inline" && "h-[400px]")}
+    >
       {messages.map((item, index) => (
         <div className="my-3" key={index}>
           {item.role === "assistant" && (
@@ -96,7 +99,7 @@ export default function ChatContent({ type }: ChatContentType) {
             </div>
           )}
           {item.role === "user" && (
-            <div className="flex items-end flex-col gap-3">
+            <div className="flex items-end flex-col">
               <div className="flex flex-wrap gap-3 justify-end">
                 {item.images?.map((fileItem, fileIndex) => (
                   <img
@@ -119,7 +122,6 @@ export default function ChatContent({ type }: ChatContentType) {
           )}
         </div>
       ))}
-      <div className="min-h-[120px]"></div>
     </div>
   );
 }

@@ -12,10 +12,15 @@ export const meta: MetaFunction = () => {
 
 export default function Index() {
   return (
-    <div className="max-w-screen-md md:mx-auto mx-3">
+    <div className="max-w-screen-md h-screen overflow-hidden md:mx-auto mx-3">
       <ChatPopup />
-      <ChatContent key={"page-content"} type={"page"} />
-      <ChatInput key={"page-input"} type={"page"} />
+      <div
+        className="flex flex-col w-full"
+        style={{ height: "calc(100vh - 80px)" }}
+      >
+        <ChatContent key={"page-content"} type={"page"} />
+        <ChatInput key={"page-input"} type={"page"} />
+      </div>
     </div>
   );
 }

@@ -20,9 +20,11 @@ export default function ChatPopup() {
             </div>
           </DialogTrigger>
           <DialogContent className="h-[500px] max-w-screen-md">
-            <DialogTitle></DialogTitle>
-            <ChatInput key={"inline-input"} type={"inline"} />
-            <ChatContent key={"inline-content"} type={"inline"} />
+            <DialogTitle className="hidden"></DialogTitle>
+            <div className="h-full">
+              <ChatInput key={"inline-input"} type={"inline"} />
+              <ChatContent key={"inline-content"} type={"inline"} />
+            </div>
           </DialogContent>
         </Dialog>
       </div>

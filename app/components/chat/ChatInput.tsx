@@ -239,8 +239,8 @@ export default function ChatInput({ type }: ChatContentType) {
   return (
     <div
       className={cn(
-        "fixed left-0 w-full pb-4 bg-white",
-        type === "page" ? "bottom-0" : "top-1"
+        "w-full bg-white"
+        // type === "page" ? "bottom-0" : "top-1"
       )}
     >
       <div className="max-w-screen-md mx-auto bg-gray-100 p-2 rounded-3xl group">
