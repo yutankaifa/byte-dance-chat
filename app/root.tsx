@@ -9,6 +9,8 @@ import type { LinksFunction } from "@remix-run/node";
 
 import "./tailwind.css";
 import { Toaster } from "~/components/ui/sonner";
+import Sidebar from "~/components/chat/Sidebar";
+import ChatPopup from "~/components/chat/ChatPopup";
 
 export const links: LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },

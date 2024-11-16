@@ -22,7 +22,6 @@ export default function ChatContent({ type }: ChatContentType) {
   const [copied, setCopied] = useState(false);
   useEffect(() => {
     if (type === "inline") {
-      console.log("inline2");
       setMessages(store.messages_inline);
     } else {
       setMessages(store.messages);
@@ -42,17 +41,10 @@ export default function ChatContent({ type }: ChatContentType) {
 
   const ScrollToBottom = () => {
     if (scrollRef.current) {
-      // if (type == "page") {
-      //   window.scrollTo({
-      //     top: scrollRef.current.scrollHeight,
-      //     behavior: "smooth",
-      //   });
-      // } else {
       scrollRef.current.scrollTo({
         top: scrollRef.current.scrollHeight,
         behavior: "smooth",
       });
-      // }
     }
   };
   useEffect(() => {

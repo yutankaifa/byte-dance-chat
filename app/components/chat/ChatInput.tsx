@@ -24,9 +24,8 @@ import { parseSSEResponse } from "~/utils/sse";
 import { allowFileList, allowImageList } from "~/utils/fileToText";
 import { PhotoIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { cloneDeep } from "lodash-es";
-const auth_key =
-  "pat_bOIFZy7Xv3B630kYQAlG8gTkyy1a6IXkPmHgHz3vytYmNNA240sD7AIlsGbXiLla";
-const bot_id = "7437535058480955442";
+import { asyncChat, asyncFileUpload } from "~/data";
+
 export default function ChatInput({ type }: ChatContentType) {
   const [prompt, setPrompt] = useState("");
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -100,20 +99,7 @@ export default function ChatInput({ type }: ChatContentType) {
     const result: MessageInter = { role: "assistant", text: "" };
     const newMessage = buildMessage();
     setMessages((prevState) => [...prevState, newMessage]);
-    const res = await fetch("/api/v3/chat", {
-      method: "POST",
-      headers: {
-        Authorization: "Bearer " + auth_key,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        bot_id,
-        user_id: "1111",
-        stream: true,
-        auto_save_history: true,
-        additional_messages: [...messages, newMessage],
-      }),
-    });
+    const res = await asyncChat([...messages, newMessage]);
     // console.log("res", res);
     if (!res.ok) {
       const error = await res.text();
@@ -145,10 +131,8 @@ export default function ChatInput({ type }: ChatContentType) {
         store.setMessagesInline([...store.messages_inline, user, result]);
     } else {
       if (type === "page") {
-        console.log("page");
         store.setMessages([...store.messages, user]);
       } else if (type === "inline") {
-        console.log("inline");
         store.setMessagesInline([...store.messages_inline, user]);
       }
     }
@@ -167,19 +151,7 @@ export default function ChatInput({ type }: ChatContentType) {
       }
     }
   };
-  const handleFileUpload = async (file: any) => {
-    const form_data = new FormData();
-    form_data.append("file", file);
-    const res = await fetch("/api/v1/files/upload", {
-      method: "POST",
-      headers: {
-        Authorization: "Bearer " + auth_key,
-        content_type: "multipart/form-data",
-      },
-      body: form_data,
-    });
-    return await res.json();
-  };
+
   const handleFileChange = async (
     e: ChangeEvent<HTMLInputElement>,
     type: object_string_type
@@ -189,7 +161,7 @@ export default function ChatInput({ type }: ChatContentType) {
     if (!file) return;
     try {
       const base64 = await handleFileToBase64(file);
-      const res = await handleFileUpload(file);
+      const res = await asyncFileUpload(file);
       console.log("res", res);
       if (res.code == 0) {
         const { file_name, id } = res.data;
@@ -214,7 +186,7 @@ export default function ChatInput({ type }: ChatContentType) {
 
       reader.onloadend = () => {
         if (reader.result) {
-          resolve(reader.result as string); // Resolve the base64 string
+          resolve(reader.result as string);
         } else {
           reject(new Error("Failed to convert file to base64"));
         }
@@ -222,7 +194,7 @@ export default function ChatInput({ type }: ChatContentType) {
 
       reader.onerror = () => reject(new Error("File reading error"));
 
-      reader.readAsDataURL(file); // Read the file as base64 data URL
+      reader.readAsDataURL(file);
     });
   };
   const removeFile = (index: number, type: object_string_type) => {
@@ -237,12 +209,7 @@ export default function ChatInput({ type }: ChatContentType) {
     }
   };
   return (
-    <div
-      className={cn(
-        "w-full bg-white"
-        // type === "page" ? "bottom-0" : "top-1"
-      )}
-    >
+    <div className={cn("w-full bg-white")}>
       <div className="max-w-screen-md mx-auto bg-gray-100 p-2 rounded-3xl group">
         {images.length > 0 && (
           <div className="flex flex-wrap m-3 gap-3">
