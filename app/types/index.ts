@@ -2,6 +2,10 @@ export type object_string_type = "text" | "file" | "image";
 export type content_type = "object_string" | "text";
 type role = "user" | "assistant";
 
+export type ChatContentType = {
+  type: "inline" | "page";
+};
+
 export interface FileInfoInter {
   file_id?: string;
   file_url?: string;

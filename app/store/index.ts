@@ -4,14 +4,14 @@ import { MessageInter } from "~/types";
 interface ChatState {
   messages: MessageInter[];
   setMessages(messages: MessageInter[]): void;
+  messages_inline: MessageInter[];
+  setMessagesInline(messages: MessageInter[]): void;
 }
 
 export const useChatStore = create<ChatState>((set) => ({
-  messages: [
-    {
-      role: "system",
-      content: "You are a helpful assistant.",
-    },
-  ],
+  messages: [],
   setMessages: (messages: MessageInter[]) => set({ messages }),
+  messages_inline: [],
+  setMessagesInline: (messages_inline: MessageInter[]) =>
+    set({ messages_inline }),
 }));

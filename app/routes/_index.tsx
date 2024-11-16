@@ -1,6 +1,7 @@
 import type { MetaFunction } from "@remix-run/node";
 import ChatInput from "~/components/chat/ChatInput";
 import ChatContent from "~/components/chat/ChatContent";
+import ChatPopup from "~/components/chat/ChatPopup";
 
 export const meta: MetaFunction = () => {
   return [
@@ -12,8 +13,9 @@ export const meta: MetaFunction = () => {
 export default function Index() {
   return (
     <div className="max-w-screen-md md:mx-auto mx-6">
-      <ChatContent />
-      <ChatInput />
+      <ChatPopup />
+      <ChatContent key={"page-content"} type={"page"} />
+      <ChatInput key={"page-input"} type={"page"} />
     </div>
   );
 }

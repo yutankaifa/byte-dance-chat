@@ -1,6 +1,6 @@
 import { useChatStore } from "~/store";
 import { useEffect, useRef, useState } from "react";
-import { MessageInter } from "~/types";
+import { ChatContentType, MessageInter } from "~/types";
 import Markdown from "~/components/chat/Markdown";
 import FileCard from "~/components/chat/FileCard";
 import { CheckIcon, ClipboardDocumentIcon } from "@heroicons/react/24/outline";
@@ -12,14 +12,20 @@ import {
   TooltipTrigger,
 } from "~/components/ui/tooltip";
 const { CopyToClipboard } = pkg;
-export default function ChatContent() {
+
+export default function ChatContent({ type }: ChatContentType) {
   const store = useChatStore();
   const [messages, setMessages] = useState<MessageInter[]>([]);
   const scrollRef = useRef<HTMLDivElement>(null);
   const timer = useRef<any>(null);
   const [copied, setCopied] = useState(false);
   useEffect(() => {
-    setMessages(store.messages);
+    if (type === "inline") {
+      console.log("inline2");
+      setMessages(store.messages_inline);
+    } else {
+      setMessages(store.messages);
+    }
   }, [store]);
 
   useEffect(() => {
@@ -35,10 +41,17 @@ export default function ChatContent() {
 
   const ScrollToBottom = () => {
     if (scrollRef.current) {
-      window.scrollTo({
-        top: scrollRef.current.scrollHeight,
-        behavior: "smooth",
-      });
+      if (type == "page") {
+        window.scrollTo({
+          top: scrollRef.current.scrollHeight,
+          behavior: "smooth",
+        });
+      } else {
+        scrollRef.current.scrollTo({
+          top: scrollRef.current.scrollHeight,
+          behavior: "smooth",
+        });
+      }
     }
   };
   useEffect(() => {
@@ -47,7 +60,8 @@ export default function ChatContent() {
     }
   }, [copied]);
   return (
-    <div ref={scrollRef} className="overflow-y-auto h-full">
+    <div ref={scrollRef} className="overflow-y-auto h-full w-full">
+      <div className="min-h-[20px]"></div>
       {messages.map((item, index) => (
         <div className="my-3" key={index}>
           {item.role === "assistant" && (
@@ -77,6 +91,7 @@ export default function ChatContent() {
                     </Tooltip>
                   </TooltipProvider>
                 </div>
+                <div className="min-h-[20px] block group-hover:hidden"></div>
               </div>
             </div>
           )}

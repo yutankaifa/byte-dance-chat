@@ -4,6 +4,7 @@ import { cn } from "~/lib/utils";
 import { toast } from "sonner";
 import { useChatStore } from "~/store";
 import {
+  ChatContentType,
   content_type,
   FileInfoInter,
   MessageApiInter,
@@ -21,12 +22,12 @@ import {
 import FileCard from "~/components/chat/FileCard";
 import { parseSSEResponse } from "~/utils/sse";
 import { allowFileList, allowImageList } from "~/utils/fileToText";
-import { PhotoIcon, XCircleIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { PhotoIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { cloneDeep } from "lodash-es";
 const auth_key =
   "pat_bOIFZy7Xv3B630kYQAlG8gTkyy1a6IXkPmHgHz3vytYmNNA240sD7AIlsGbXiLla";
 const bot_id = "7437535058480955442";
-export default function ChatInput() {
+export default function ChatInput({ type }: ChatContentType) {
   const [prompt, setPrompt] = useState("");
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -34,6 +35,7 @@ export default function ChatInput() {
   const [images, setImages] = useState<FileInfoInter[]>([]);
   const [messages, setMessages] = useState<MessageApiInter[]>([]);
   const store = useChatStore();
+
   useEffect(() => {
     if (inputRef.current) {
       inputRef.current.focus();
@@ -94,7 +96,7 @@ export default function ChatInput() {
     setIsLoading(true);
     resetInput();
     const user: MessageInter = { role: "user", text: prompt, files, images };
-    store.setMessages([...store.messages, user]);
+    updateStoreMessage(user);
     const result: MessageInter = { role: "assistant", text: "" };
     const newMessage = buildMessage();
     setMessages((prevState) => [...prevState, newMessage]);
@@ -119,7 +121,7 @@ export default function ChatInput() {
     }
     await parseSSEResponse(res, (message) => {
       if (message.includes("[DONE]")) {
-        store.setMessages([...store.messages, user, result]);
+        updateStoreMessage(user, result);
         setIsLoading(false);
         return;
       }
@@ -132,9 +134,24 @@ export default function ChatInput() {
       }
       if (data?.content) {
         result.text += data?.content;
-        store.setMessages([...store.messages, user, result]);
+        updateStoreMessage(user, result);
       }
     });
+  };
+  const updateStoreMessage = (user, result?: any) => {
+    if (result) {
+      if (type === "page") store.setMessages([...store.messages, user, result]);
+      else if (type === "inline")
+        store.setMessagesInline([...store.messages_inline, user, result]);
+    } else {
+      if (type === "page") {
+        console.log("page");
+        store.setMessages([...store.messages, user]);
+      } else if (type === "inline") {
+        console.log("inline");
+        store.setMessagesInline([...store.messages_inline, user]);
+      }
+    }
   };
   const onKeyDown = async (e: any) => {
     if (e.key === "Enter") {
@@ -220,7 +237,12 @@ export default function ChatInput() {
     }
   };
   return (
-    <div className="fixed bottom-0 left-0 w-full pb-4 bg-white">
+    <div
+      className={cn(
+        "fixed left-0 w-full pb-4 bg-white",
+        type === "page" ? "bottom-0" : "top-0"
+      )}
+    >
       <div className="max-w-screen-md mx-auto bg-gray-100 p-3 rounded-3xl group">
         {images.length > 0 && (
           <div className="flex flex-wrap m-3 gap-3">
