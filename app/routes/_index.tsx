@@ -2,6 +2,12 @@ import type { MetaFunction } from "@remix-run/node";
 import ChatInput from "~/components/chat/ChatInput";
 import ChatContent from "~/components/chat/ChatContent";
 import ChatPopup from "~/components/chat/ChatPopup";
+import { getData } from "~/.server/inedx";
+
+export const loader = async () => {
+  const res = await getData();
+  return Response.json({ res });
+};
 
 export const meta: MetaFunction = () => {
   return [

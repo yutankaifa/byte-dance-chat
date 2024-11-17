@@ -91,7 +91,7 @@ export default function ChatContent({ type }: ChatContentType) {
             </div>
           )}
           {item.role === "user" && (
-            <div className="flex items-end flex-col">
+            <div className="flex items-end flex-col gap-3">
               <div className="flex flex-wrap gap-3 justify-end">
                 {item.images?.map((fileItem, fileIndex) => (
                   <img
