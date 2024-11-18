@@ -12,6 +12,7 @@ import {
   TooltipTrigger,
 } from "~/components/ui/tooltip";
 import { cn } from "~/lib/utils";
+import { emitter, send_message } from "~/utils/event-bus";
 const { CopyToClipboard } = pkg;
 
 export default function ChatContent({ type }: ChatContentType) {
@@ -52,6 +53,10 @@ export default function ChatContent({ type }: ChatContentType) {
       setTimeout(() => setCopied(false), 1000);
     }
   }, [copied]);
+
+  const sendMessage = (v: string) => {
+    store.setSendMessageFlag(v);
+  };
   return (
     <div
       ref={scrollRef}
@@ -60,34 +65,51 @@ export default function ChatContent({ type }: ChatContentType) {
       {messages.map((item, index) => (
         <div className="my-3" key={index}>
           {item.role === "assistant" && (
-            <div className="group">
-              <div>
-                <Markdown>{item.text}</Markdown>
-                <div className="w-full hidden justify-end group-hover:flex">
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger>
-                        <CopyToClipboard
-                          text={item.text}
-                          onCopy={() => setCopied(true)}
-                        >
-                          <div className="flex flex-row items-center gap-2 cursor-pointer w-fit ml-1">
-                            {copied ? (
-                              <CheckIcon width={20} />
-                            ) : (
-                              <ClipboardDocumentIcon width={20} />
-                            )}
-                          </div>
-                        </CopyToClipboard>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>复制</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
+            <div>
+              <div className="group">
+                <div>
+                  <Markdown>{item.text}</Markdown>
+                  <div className="w-full hidden justify-end group-hover:flex">
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <CopyToClipboard
+                            text={item.text}
+                            onCopy={() => setCopied(true)}
+                          >
+                            <div className="flex flex-row items-center gap-2 cursor-pointer w-fit ml-1">
+                              {copied ? (
+                                <CheckIcon width={20} />
+                              ) : (
+                                <ClipboardDocumentIcon width={20} />
+                              )}
+                            </div>
+                          </CopyToClipboard>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>复制</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </div>
+                  <div className="min-h-[20px] block group-hover:hidden"></div>
                 </div>
-                <div className="min-h-[20px] block group-hover:hidden"></div>
               </div>
+              {index == messages.length - 1 && (
+                <div className="flex flex-col gap-2">
+                  {item.suggestions &&
+                    item.suggestions.map((item, index) => (
+                      <div key={index}>
+                        <span
+                          onClick={() => sendMessage(item)}
+                          className="text-blue-400 hover:text-blue-500 cursor-pointer"
+                        >
+                          {item}
+                        </span>
+                      </div>
+                    ))}
+                </div>
+              )}
             </div>
           )}
           {item.role === "user" && (

@@ -10,6 +10,7 @@ import {
   MessageApiInter,
   MessageInter,
   object_string_type,
+  ResponseMessageType,
 } from "~/types";
 import TextareaAutosize from "react-textarea-autosize";
 import { PaperclipIcon } from "lucide-react";
@@ -40,6 +41,10 @@ export default function ChatInput({ type }: ChatContentType) {
       inputRef.current.focus();
     }
   }, []);
+
+  useEffect(() => {
+    if (store.sendMessageFlag) sendMessage(store.sendMessageFlag);
+  }, [store.sendMessageFlag]);
 
   const buildContent = (
     text: string,
@@ -73,8 +78,9 @@ export default function ChatInput({ type }: ChatContentType) {
     }
     return { arr, content_type };
   };
-  const buildMessage = () => {
-    const { arr, content_type } = buildContent(prompt, files, images);
+  const buildMessage = (v?: string) => {
+    const { arr, content_type } = buildContent(v || prompt, files, images);
+    console.log("arr", arr);
     return {
       role: "user",
       content: JSON.stringify(arr),
@@ -86,41 +92,56 @@ export default function ChatInput({ type }: ChatContentType) {
     setFiles([]);
     setImages([]);
   };
-  const sendMessage = async () => {
+  const sendMessage = async (v?: string) => {
     if (isLoading) return;
-    if (!prompt.trim()) {
+    if (!v && !prompt.trim()) {
       toast.warning("文本不能为空");
       return;
     }
     setIsLoading(true);
     resetInput();
-    const user: MessageInter = { role: "user", text: prompt, files, images };
+    const user: MessageInter = {
+      role: "user",
+      text: v || prompt,
+      files,
+      images,
+    };
     updateStoreMessage(user);
-    const result: MessageInter = { role: "assistant", text: "" };
-    const newMessage = buildMessage();
-    setMessages((prevState) => [...prevState, newMessage]);
-    const res = await asyncChat([...messages, newMessage]);
-    // console.log("res", res);
+    const result: MessageInter = {
+      role: "assistant",
+      text: "",
+      suggestions: [],
+    };
+    const newMessage = buildMessage(v);
+    const _messages = [...messages, newMessage];
+    const res = await asyncChat(_messages);
     if (!res.ok) {
       const error = await res.text();
       console.log("error", error);
     }
     await parseSSEResponse(res, (message) => {
       if (message.includes("[DONE]")) {
+        if (store.sendMessageFlag) store.setSendMessageFlag("");
         updateStoreMessage(user, result);
+        setMessages([
+          ..._messages,
+          { role: "assistant", content: result.text } as MessageApiInter,
+        ]);
         setIsLoading(false);
         return;
       }
-      let data;
+      let data: ResponseMessageType;
       try {
         data = JSON.parse(message);
       } catch (err) {
         console.error(err);
         return;
       }
-      if (data?.content) {
+      if (["answer"].includes(data?.type) && !data.created_at) {
         result.text += data?.content;
         updateStoreMessage(user, result);
+      } else if (data?.type === "follow_up") {
+        result.suggestions?.push(data.content);
       }
     });
   };
@@ -307,7 +328,7 @@ export default function ChatInput({ type }: ChatContentType) {
               placeholder={"发消息，Shift+Enter换行"}
             />
           </div>
-          <Button disabled={isLoading} onClick={sendMessage}>
+          <Button disabled={isLoading} onClick={() => sendMessage()}>
             {isLoading ? "回复中" : "发送"}
           </Button>
         </div>

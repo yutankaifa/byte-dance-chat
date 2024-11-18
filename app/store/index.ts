@@ -6,6 +6,8 @@ interface ChatState {
   setMessages(messages: MessageInter[]): void;
   messages_inline: MessageInter[];
   setMessagesInline(messages: MessageInter[]): void;
+  sendMessageFlag: string;
+  setSendMessageFlag(sendMessageFlag: string): void;
 }
 
 export const useChatStore = create<ChatState>((set) => ({
@@ -14,4 +16,6 @@ export const useChatStore = create<ChatState>((set) => ({
   messages_inline: [],
   setMessagesInline: (messages_inline: MessageInter[]) =>
     set({ messages_inline }),
+  sendMessageFlag: "",
+  setSendMessageFlag: (sendMessageFlag: string) => set({ sendMessageFlag }),
 }));
