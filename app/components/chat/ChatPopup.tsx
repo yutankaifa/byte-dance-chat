@@ -19,7 +19,7 @@ export default function ChatPopup() {
               <span>请搜索...</span>
             </div>
           </DialogTrigger>
-          <DialogContent className="h-[500px] max-w-screen-md">
+          <DialogContent className="h-[500px] max-w-screen-md rounded-2xl">
             <DialogTitle className="hidden"></DialogTitle>
             <div className="h-full">
               <ChatInput key={"inline-input"} type={"inline"} />

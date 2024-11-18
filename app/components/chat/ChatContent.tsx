@@ -91,22 +91,30 @@ export default function ChatContent({ type }: ChatContentType) {
             </div>
           )}
           {item.role === "user" && (
-            <div className="flex items-end flex-col gap-3">
-              <div className="flex flex-wrap gap-3 justify-end">
-                {item.images?.map((fileItem, fileIndex) => (
-                  <img
-                    src={fileItem.base64}
-                    className="w-14 h-14 rounded-3xl "
-                    key={fileIndex}
-                    alt=""
-                  />
-                ))}
-              </div>
-              <div className="flex flex-wrap gap-3 justify-end">
-                {item.files?.map((fileItem, fileIndex) => (
-                  <FileCard key={fileIndex} index={fileIndex} item={fileItem} />
-                ))}
-              </div>
+            <div className={"flex items-end flex-col gap-3"}>
+              {item.images && item.images.length > 0 && (
+                <div className="flex flex-wrap gap-3 justify-end">
+                  {item.images?.map((fileItem, fileIndex) => (
+                    <img
+                      src={fileItem.base64}
+                      className="w-14 h-14 rounded-3xl "
+                      key={fileIndex}
+                      alt=""
+                    />
+                  ))}
+                </div>
+              )}
+              {item.files && item.files.length > 0 && (
+                <div className="flex flex-wrap gap-3 justify-end">
+                  {item.files?.map((fileItem, fileIndex) => (
+                    <FileCard
+                      key={fileIndex}
+                      index={fileIndex}
+                      item={fileItem}
+                    />
+                  ))}
+                </div>
+              )}
               <div className="max-w-lg bg-gray-200 px-4 py-2 rounded-3xl">
                 <pre>{item.text}</pre>
               </div>
