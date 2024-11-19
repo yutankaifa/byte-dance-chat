@@ -106,12 +106,12 @@ export default function ChatInput({ type }: ChatContentType) {
       files,
       images,
     };
-    updateStoreMessage(user);
     const result: MessageInter = {
       role: "assistant",
       text: "",
       suggestions: [],
     };
+    updateStoreMessage(user, result);
     const newMessage = buildMessage(v);
     const _messages = [...messages, newMessage];
     const res = await asyncChat(_messages);

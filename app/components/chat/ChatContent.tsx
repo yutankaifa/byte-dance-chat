@@ -12,7 +12,7 @@ import {
   TooltipTrigger,
 } from "~/components/ui/tooltip";
 import { cn } from "~/lib/utils";
-import { emitter, send_message } from "~/utils/event-bus";
+import { MdSkeleton, SuggestionSkeleton } from "~/components/chat/ChatSkeleton";
 const { CopyToClipboard } = pkg;
 
 export default function ChatContent({ type }: ChatContentType) {
@@ -66,8 +66,8 @@ export default function ChatContent({ type }: ChatContentType) {
         <div className="my-3" key={index}>
           {item.role === "assistant" && (
             <div>
-              <div className="group">
-                <div>
+              {item.text ? (
+                <div className="group">
                   <Markdown>{item.text}</Markdown>
                   <div className="w-full hidden justify-end group-hover:flex">
                     <TooltipProvider>
@@ -94,11 +94,14 @@ export default function ChatContent({ type }: ChatContentType) {
                   </div>
                   <div className="min-h-[20px] block group-hover:hidden"></div>
                 </div>
-              </div>
-              {index == messages.length - 1 && (
-                <div className="flex flex-col gap-2">
-                  {item.suggestions &&
-                    item.suggestions.map((item, index) => (
+              ) : (
+                <MdSkeleton />
+              )}
+              {index == messages.length - 1 &&
+                // @ts-expect-error
+                (item.suggestions?.length > 0 ? (
+                  <div className="flex flex-col gap-2">
+                    {item.suggestions.map((item, index) => (
                       <div key={index}>
                         <span
                           onClick={() => sendMessage(item)}
@@ -108,8 +111,10 @@ export default function ChatContent({ type }: ChatContentType) {
                         </span>
                       </div>
                     ))}
-                </div>
-              )}
+                  </div>
+                ) : (
+                  <SuggestionSkeleton />
+                ))}
             </div>
           )}
           {item.role === "user" && (
