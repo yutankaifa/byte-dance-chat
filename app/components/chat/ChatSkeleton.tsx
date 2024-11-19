@@ -3,7 +3,7 @@ import { Skeleton } from "~/components/ui/skeleton";
 export const MdSkeleton = () => {
   return (
     <div>
-      <Skeleton className="w-3/4 h-[300px] rounded-3xl" />
+      <Skeleton className="w-3/4 aspect-video rounded-3xl" />
     </div>
   );
 };

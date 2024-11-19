@@ -98,17 +98,18 @@ export default function ChatContent({ type }: ChatContentType) {
                 <MdSkeleton />
               )}
               {index == messages.length - 1 &&
+                item.suggestions &&
                 // @ts-expect-error
                 (item.suggestions?.length > 0 ? (
                   <div className="flex flex-col gap-2">
                     {item.suggestions.map((item, index) => (
                       <div key={index}>
-                        <span
+                        <button
                           onClick={() => sendMessage(item)}
                           className="text-blue-400 hover:text-blue-500 cursor-pointer"
                         >
                           {item}
-                        </span>
+                        </button>
                       </div>
                     ))}
                   </div>

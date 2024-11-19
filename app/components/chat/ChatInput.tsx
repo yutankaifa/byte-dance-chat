@@ -122,6 +122,7 @@ export default function ChatInput({ type }: ChatContentType) {
     await parseSSEResponse(res, (message) => {
       if (message.includes("[DONE]")) {
         if (store.sendMessageFlag) store.setSendMessageFlag("");
+        if (result.suggestions?.length == 0) result.suggestions = undefined;
         updateStoreMessage(user, result);
         setMessages([
           ..._messages,
