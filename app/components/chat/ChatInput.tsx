@@ -274,7 +274,7 @@ export default function ChatInput({ type }: ChatContentType) {
             <div className="flex items-center justify-center gap-3">
               <TooltipProvider>
                 <Tooltip>
-                  <TooltipTrigger>
+                  <TooltipTrigger aria-label="选择文件">
                     <label>
                       <PaperclipIcon width={22} className="cursor-pointer" />
                       <input
@@ -295,7 +295,7 @@ export default function ChatInput({ type }: ChatContentType) {
               </TooltipProvider>
               <TooltipProvider>
                 <Tooltip>
-                  <TooltipTrigger>
+                  <TooltipTrigger aria-label="选择图片">
                     <label>
                       <PhotoIcon width={24} className="cursor-pointer" />
                       <input
@@ -321,6 +321,7 @@ export default function ChatInput({ type }: ChatContentType) {
               className={cn(
                 "resize-none hover:resize overflow-x-hidden overflow-y-auto w-full outline-none text-sm bg-transparent leading-6 text-primary-text scrollbar-thin placeholder:text-gray-400"
               )}
+              style={{ height: 24 }}
               onChange={(e) => setPrompt(e.target.value)}
               onKeyDown={onKeyDown}
               minRows={1}

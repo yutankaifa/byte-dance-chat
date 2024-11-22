@@ -1,6 +1,5 @@
-import { PaperclipIcon } from "lucide-react";
-import { FileInfoInter } from "~/utils/fileToText";
 import { DocumentTextIcon } from "@heroicons/react/24/outline";
+import { FileInfoInter } from "~/types";
 interface Props {
   index: number;
   item: FileInfoInter;
