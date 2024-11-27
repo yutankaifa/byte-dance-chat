@@ -118,7 +118,13 @@ export default function ChatInput({ type }: ChatContentType) {
     const _messages = [...messages, newMessage];
     try {
       const res = await asyncChat(_messages);
-      await handleSSEResponse(res, user, result, _messages);
+      const contentType = res.headers.get("Content-Type");
+      if (contentType?.includes("text/event-stream")) {
+        await handleSSEResponse(res, user, result, _messages);
+      } else {
+        const jsonData = await res.json();
+        throw new Error(jsonData.msg || "请求失败");
+      }
     } catch (err) {
       const error = ChatError.fromError(err);
       setIsLoading(false);
