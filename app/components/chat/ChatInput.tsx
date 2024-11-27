@@ -22,10 +22,11 @@ import {
 } from "~/components/ui/tooltip";
 import FileCard from "~/components/chat/FileCard";
 import { parseSSEResponse } from "~/utils/sse";
-import { allowFileList, allowImageList } from "~/utils/fileToText";
+import { allowFileList, allowImageList } from "~/utils/allow";
 import { PhotoIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { ChatError } from "~/utils/error";
 import { cloneDeep } from "lodash-es";
-import { asyncChat, asyncFileUpload } from "~/data";
+import { asyncChat, asyncFileUpload } from "~/apis/data";
 
 export default function ChatInput({ type }: ChatContentType) {
   const [prompt, setPrompt] = useState("");
@@ -44,6 +45,7 @@ export default function ChatInput({ type }: ChatContentType) {
 
   useEffect(() => {
     if (store.sendMessageFlag) sendMessage(store.sendMessageFlag);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [store.sendMessageFlag]);
 
   const buildContent = (
@@ -114,21 +116,33 @@ export default function ChatInput({ type }: ChatContentType) {
     updateStoreMessage(user, result);
     const newMessage = buildMessage(v);
     const _messages = [...messages, newMessage];
-    const res = await asyncChat(_messages);
-    if (!res.ok) {
-      const error = await res.text();
-      console.log("error", error);
+    try {
+      const res = await asyncChat(_messages);
+      await handleSSEResponse(res, user, result, _messages);
+    } catch (err) {
+      const error = ChatError.fromError(err);
+      setIsLoading(false);
+      result.error = error.message;
+      updateStoreMessage(user, result);
+    } finally {
+      if (store.sendMessageFlag) store.setSendMessageFlag("");
+      if (result.suggestions?.length == 0) result.suggestions = undefined;
+      updateStoreMessage(user, result);
+      setIsLoading(false);
     }
+  };
+  const handleSSEResponse = async (
+    res: Response,
+    user: MessageInter,
+    result: MessageInter,
+    _messages: MessageApiInter[]
+  ) => {
     await parseSSEResponse(res, (message) => {
       if (message.includes("[DONE]")) {
-        if (store.sendMessageFlag) store.setSendMessageFlag("");
-        if (result.suggestions?.length == 0) result.suggestions = undefined;
-        updateStoreMessage(user, result);
         setMessages([
           ..._messages,
           { role: "assistant", content: result.text } as MessageApiInter,
         ]);
-        setIsLoading(false);
         return;
       }
       let data: ResponseMessageType;
@@ -146,7 +160,7 @@ export default function ChatInput({ type }: ChatContentType) {
       }
     });
   };
-  const updateStoreMessage = (user, result?: any) => {
+  const updateStoreMessage = (user: MessageInter, result?: MessageInter) => {
     if (result) {
       if (type === "page") store.setMessages([...store.messages, user, result]);
       else if (type === "inline")
@@ -159,7 +173,7 @@ export default function ChatInput({ type }: ChatContentType) {
       }
     }
   };
-  const onKeyDown = async (e: any) => {
+  const onKeyDown = async (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter") {
       e.preventDefault();
       if (e.shiftKey) {
@@ -283,7 +297,7 @@ export default function ChatInput({ type }: ChatContentType) {
                         style={{ display: "none" }}
                         onChange={(e) => handleFileChange(e, "file")}
                         onClick={(event) => {
-                          event.target.value = null;
+                          (event.target as HTMLInputElement).value = "";
                         }}
                       />
                     </label>
@@ -304,7 +318,7 @@ export default function ChatInput({ type }: ChatContentType) {
                         style={{ display: "none" }}
                         onChange={(e) => handleFileChange(e, "image")}
                         onClick={(event) => {
-                          event.target.value = null;
+                          (event.target as HTMLInputElement).value = "";
                         }}
                       />
                     </label>

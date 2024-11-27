@@ -19,7 +19,7 @@ export default function ChatContent({ type }: ChatContentType) {
   const store = useChatStore();
   const [messages, setMessages] = useState<MessageInter[]>([]);
   const scrollRef = useRef<HTMLDivElement>(null);
-  const timer = useRef<any>(null);
+  const timer = useRef<NodeJS.Timeout | null>(null);
   const [copied, setCopied] = useState(false);
   useEffect(() => {
     if (type === "inline") {
@@ -35,7 +35,7 @@ export default function ChatContent({ type }: ChatContentType) {
     if (timer.current || distance > 0) return;
     timer.current = setTimeout(() => {
       ScrollToBottom();
-      clearTimeout(timer.current);
+      clearTimeout(timer.current as NodeJS.Timeout);
       timer.current = null;
     }, 800);
   }, [messages]);
@@ -66,40 +66,43 @@ export default function ChatContent({ type }: ChatContentType) {
         <div className="my-3" key={index}>
           {item.role === "assistant" && (
             <div>
-              {item.text ? (
-                <div className="group">
-                  <Markdown>{item.text}</Markdown>
-                  <div className="w-full hidden justify-end group-hover:flex">
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger>
-                          <CopyToClipboard
-                            text={item.text}
-                            onCopy={() => setCopied(true)}
-                          >
-                            <div className="flex flex-row items-center gap-2 cursor-pointer w-fit ml-1">
-                              {copied ? (
-                                <CheckIcon width={20} />
-                              ) : (
-                                <ClipboardDocumentIcon width={20} />
-                              )}
-                            </div>
-                          </CopyToClipboard>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>复制</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
+              {!item.error ? (
+                item.text ? (
+                  <div className="group">
+                    <Markdown>{item.text}</Markdown>
+                    <div className="w-full hidden justify-end group-hover:flex">
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger>
+                            <CopyToClipboard
+                              text={item.text}
+                              onCopy={() => setCopied(true)}
+                            >
+                              <div className="flex flex-row items-center gap-2 cursor-pointer w-fit ml-1">
+                                {copied ? (
+                                  <CheckIcon width={20} />
+                                ) : (
+                                  <ClipboardDocumentIcon width={20} />
+                                )}
+                              </div>
+                            </CopyToClipboard>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>复制</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </div>
+                    <div className="min-h-[20px] block group-hover:hidden"></div>
                   </div>
-                  <div className="min-h-[20px] block group-hover:hidden"></div>
-                </div>
+                ) : (
+                  <MdSkeleton />
+                )
               ) : (
-                <MdSkeleton />
+                <div className="text-red-500">{item.error}</div>
               )}
               {index == messages.length - 1 &&
                 item.suggestions &&
-                // @ts-expect-error
                 (item.suggestions?.length > 0 ? (
                   <div className="flex flex-col gap-2">
                     {item.suggestions.map((item, index) => (

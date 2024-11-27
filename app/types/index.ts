@@ -28,6 +28,7 @@ export interface MessageInter {
   suggestions?: string[];
   files?: FileInfoInter[];
   images?: FileInfoInter[];
+  error?: string;
 }
 export interface MessageApiInter {
   role: role;
