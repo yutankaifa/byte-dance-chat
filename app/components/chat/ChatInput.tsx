@@ -22,11 +22,12 @@ import {
 } from "~/components/ui/tooltip";
 import FileCard from "~/components/chat/FileCard";
 import { parseSSEResponse } from "~/utils/sse";
-import { allowFileList, allowImageList } from "~/utils/allow";
-import { PhotoIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { allowFileList, allowImageList } from "~/utils/file";
+import { PhotoIcon } from "@heroicons/react/24/outline";
 import { ChatError } from "~/utils/error";
 import { cloneDeep } from "lodash-es";
-import { asyncChat, asyncFileUpload } from "~/apis/data";
+import { asyncChat } from "~/apis/data";
+import ImageCard from "./ImageCard";
 
 export default function ChatInput({ type }: ChatContentType) {
   const [prompt, setPrompt] = useState("");
@@ -198,47 +199,13 @@ export default function ChatInput({ type }: ChatContentType) {
     e: ChangeEvent<HTMLInputElement>,
     type: object_string_type
   ) => {
-    console.log("e", e);
     const file = e.target.files?.[0];
     if (!file) return;
-    try {
-      const base64 = await handleFileToBase64(file);
-      const res = await asyncFileUpload(file);
-      console.log("res", res);
-      if (res.code == 0) {
-        const { file_name, id } = res.data;
-        if (type == "file")
-          setFiles((prevState) => [
-            ...prevState,
-            { name: file_name, file_id: id, base64 },
-          ]);
-        else if (type == "image")
-          setImages((prevState) => [
-            ...prevState,
-            { name: file_name, file_id: id, base64 },
-          ]);
-      } else toast.error("文件上传失败!");
-    } catch (error) {
-      console.error("Error processing file:", error);
-    }
+    if (type == "file") setFiles([...files, { file, name: file.name }]);
+    else if (type == "image") setImages([...images, { file, name: file.name }]);
+    else toast.error("不支持的文件类型");
   };
-  const handleFileToBase64 = async (file: File) => {
-    return new Promise<string>((resolve, reject) => {
-      const reader = new FileReader();
 
-      reader.onloadend = () => {
-        if (reader.result) {
-          resolve(reader.result as string);
-        } else {
-          reject(new Error("Failed to convert file to base64"));
-        }
-      };
-
-      reader.onerror = () => reject(new Error("File reading error"));
-
-      reader.readAsDataURL(file);
-    });
-  };
   const removeFile = (index: number, type: object_string_type) => {
     if (type == "file") {
       const clone_file = cloneDeep(files);
@@ -256,36 +223,24 @@ export default function ChatInput({ type }: ChatContentType) {
         {images.length > 0 && (
           <div className="flex flex-wrap m-3 gap-3">
             {images.map((item, index) => (
-              <div
-                className="hover:opacity-80 rounded-xl border relative"
+              <ImageCard
                 key={index}
-              >
-                <img
-                  src={item.base64}
-                  className="w-14 h-14 "
-                  key={index}
-                  alt=""
-                />
-                <XMarkIcon
-                  width={16}
-                  onClick={() => removeFile(index, "image")}
-                  className="absolute right-0 top-0 translate-y-[-50%] translate-x-1/2 hidden group-hover:block"
-                />
-              </div>
+                file={item}
+                index={index}
+                removeFile={() => removeFile(index, "image")}
+              />
             ))}
           </div>
         )}
         {files.length > 0 && (
           <div className="flex flex-wrap my-3 gap-3">
             {files.map((item, index) => (
-              <div className="relative" key={index}>
-                <FileCard index={index} item={item} />
-                <XMarkIcon
-                  width={16}
-                  onClick={() => removeFile(index, "file")}
-                  className="absolute right-0 top-0 translate-y-[-50%] translate-x-1/2 hidden group-hover:block"
-                />
-              </div>
+              <FileCard
+                key={index}
+                file={item}
+                index={index}
+                removeFile={() => removeFile(index, "file")}
+              />
             ))}
           </div>
         )}

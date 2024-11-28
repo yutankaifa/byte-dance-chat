@@ -17,10 +17,12 @@ export type ChatContentType = {
 };
 
 export interface FileInfoInter {
+  file: File;
   file_id?: string;
   file_url?: string;
   name: string;
   base64?: string;
+  status?: "uploading" | "uploaded" | "failed";
 }
 export interface MessageInter {
   role: role;
