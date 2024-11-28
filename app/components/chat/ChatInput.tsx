@@ -158,14 +158,15 @@ export default function ChatInput({ type }: ChatContentType) {
       try {
         data = JSON.parse(message);
       } catch (err) {
-        console.error(err);
-        return;
+        throw new Error("解析失败");
       }
       if (["answer"].includes(data?.type) && !data.created_at) {
         result.text += data?.content;
         updateStoreMessage(user, result);
       } else if (data?.type === "follow_up") {
         result.suggestions?.push(data.content);
+      } else if (data?.status == "failed") {
+        throw new Error(data.last_error!.msg);
       }
     });
   };
@@ -203,10 +204,8 @@ export default function ChatInput({ type }: ChatContentType) {
   ) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (type == "file")
-      setFiles([...files, { file, name: file.name }]);
-    else if (type == "image")
-      setImages([...images, { file, name: file.name }]);
+    if (type == "file") setFiles([...files, { file, name: file.name }]);
+    else if (type == "image") setImages([...images, { file, name: file.name }]);
     else toast.error("不支持的文件类型");
   };
 

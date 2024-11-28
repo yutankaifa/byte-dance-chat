@@ -11,6 +11,10 @@ export type ResponseMessageType = {
   created_at?: string;
   type: message_type;
   content: string;
+  status?: "failed" | "in_progress" | "created";
+  last_error?: {
+    msg: string;
+  };
 };
 export type ChatContentType = {
   type: "inline" | "page";
