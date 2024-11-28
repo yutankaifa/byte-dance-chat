@@ -41,3 +41,6 @@ export interface MessageApiInter {
   content: string;
   content_type: content_type;
 }
+export interface SettingInter {
+  token?: string;
+}

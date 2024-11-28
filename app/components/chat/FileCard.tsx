@@ -4,17 +4,11 @@ import { toast } from "sonner";
 import { asyncFileUpload } from "~/apis/data";
 import { FileInfoInter } from "~/types";
 interface Props {
-  index: number;
   file: FileInfoInter;
-  removeFile?: (index: number) => void;
+  removeFile?: () => void;
   updateFile?: (file: FileInfoInter) => void;
 }
-export default function FileCard({
-  index,
-  file,
-  removeFile,
-  updateFile,
-}: Props) {
+export default function FileCard({ file, removeFile, updateFile }: Props) {
   const [item, setItem] = useState<FileInfoInter>();
   const handleUpload = async () => {
     try {
@@ -50,11 +44,8 @@ export default function FileCard({
     handleUpload();
   }, []);
   return (
-    <div className="relative" key={index}>
-      <div
-        className="flex gap-2 items-center p-3 rounded-2xl bg-gray-100"
-        key={index}
-      >
+    <div className="relative">
+      <div className="flex gap-2 items-center p-3 rounded-2xl bg-gray-100">
         <DocumentTextIcon width={22} />
         <div className="flex flex-col gap-1">
           <p>{item?.name}</p>
@@ -70,7 +61,7 @@ export default function FileCard({
       {removeFile && (
         <XMarkIcon
           width={16}
-          onClick={() => removeFile(index)}
+          onClick={removeFile}
           className="absolute right-0 top-0 translate-y-[-50%] translate-x-1/2 hidden group-hover:block"
         />
       )}

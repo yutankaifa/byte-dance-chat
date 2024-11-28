@@ -126,7 +126,9 @@ export default function ChatInput({ type }: ChatContentType) {
         await handleSSEResponse(res, user, result, _messages);
       } else {
         const jsonData = await res.json();
-        throw new Error(jsonData.msg || "请求失败");
+        if (jsonData.code == 4100) {
+          throw new Error("token不正确，请先在设置页面设置正确的 token！！！");
+        } else throw new Error(jsonData.msg || "请求失败");
       }
     } catch (err) {
       const error = ChatError.fromError(err);
@@ -229,7 +231,6 @@ export default function ChatInput({ type }: ChatContentType) {
               <ImageCard
                 key={index}
                 file={item}
-                index={index}
                 removeFile={() => removeFile(index, "image")}
                 updateFile={(file) => {
                   const clone_img = cloneDeep(images);
@@ -246,7 +247,6 @@ export default function ChatInput({ type }: ChatContentType) {
               <FileCard
                 key={index}
                 file={item}
-                index={index}
                 removeFile={() => removeFile(index, "file")}
                 updateFile={(file) => {
                   const clone_file = cloneDeep(files);

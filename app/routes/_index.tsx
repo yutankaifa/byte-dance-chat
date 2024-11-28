@@ -1,8 +1,9 @@
 import type { MetaFunction } from "@remix-run/node";
 import ChatInput from "~/components/chat/ChatInput";
 import ChatContent from "~/components/chat/ChatContent";
-import ChatPopup from "~/components/chat/ChatPopup";
+import ChatDialog from "~/components/chat/ChatDialog";
 import { getData } from "~/.server/inedx";
+import ChatSetting from "~/components/chat/ChatSetting";
 
 export const loader = async () => {
   const res = await getData();
@@ -19,7 +20,10 @@ export const meta: MetaFunction = () => {
 export default function Index() {
   return (
     <div className="max-w-screen-md h-screen overflow-hidden md:mx-auto mx-3">
-      <ChatPopup />
+      <div className="flex justify-between">
+        <ChatSetting />
+        <ChatDialog />
+      </div>
       <div
         className="flex flex-col w-full"
         style={{ height: "calc(100vh - 80px)" }}

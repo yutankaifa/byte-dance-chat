@@ -6,16 +6,10 @@ import { handleFileToBase64 } from "~/utils/file";
 import { FileInfoInter } from "~/types";
 interface Props {
   file: FileInfoInter;
-  index: number;
-  removeFile?: (index: number) => void;
+  removeFile?: () => void;
   updateFile?: (file: FileInfoInter) => void;
 }
-export default function ImageCard({
-  file,
-  index,
-  removeFile,
-  updateFile,
-}: Props) {
+export default function ImageCard({ file, removeFile, updateFile }: Props) {
   const [item, setItem] = useState<FileInfoInter>();
   const handleUpload = async () => {
     try {
@@ -54,21 +48,16 @@ export default function ImageCard({
     handleUpload();
   }, []);
   return (
-    <div className="hover:opacity-80 rounded-xl border relative" key={index}>
+    <div className="hover:opacity-80 rounded-xl border relative">
       {item?.status == "uploading" && <p className="p-1">Uploading...</p>}
       {item?.status == "uploaded" && (
-        <img
-          src={item?.base64}
-          className="w-14 h-14"
-          key={index}
-          alt={file.name}
-        />
+        <img src={item?.base64} className="w-14 h-14" alt={file.name} />
       )}
       {item?.status == "failed" && <p className="text-red-500 p-1">Failed!</p>}
       {removeFile && (
         <XMarkIcon
           width={16}
-          onClick={() => removeFile(index)}
+          onClick={removeFile}
           className="absolute right-0 top-0 translate-y-[-50%] translate-x-1/2 hidden group-hover:block"
         />
       )}

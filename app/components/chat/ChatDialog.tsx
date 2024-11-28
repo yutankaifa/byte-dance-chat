@@ -8,7 +8,7 @@ import {
 import ChatContent from "~/components/chat/ChatContent";
 import ChatInput from "~/components/chat/ChatInput";
 
-export default function ChatPopup() {
+export default function ChatDialog() {
   return (
     <div className="my-2 flex justify-center">
       <div>
