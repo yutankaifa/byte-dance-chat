@@ -6,9 +6,15 @@ import { FileInfoInter } from "~/types";
 interface Props {
   index: number;
   file: FileInfoInter;
-  removeFile: (index: number) => void;
+  removeFile?: (index: number) => void;
+  updateFile?: (file: FileInfoInter) => void;
 }
-export default function FileCard({ index, file, removeFile }: Props) {
+export default function FileCard({
+  index,
+  file,
+  removeFile,
+  updateFile,
+}: Props) {
   const [item, setItem] = useState<FileInfoInter>();
   const handleUpload = async () => {
     try {
@@ -20,11 +26,13 @@ export default function FileCard({ index, file, removeFile }: Props) {
       console.log("res", res);
       if (res.code == 0) {
         const { id } = res.data;
-        setItem({
+        const newFile: FileInfoInter = {
           ...file,
           file_id: id,
           status: "uploaded",
-        });
+        };
+        setItem(newFile);
+        updateFile?.(newFile);
       } else if (res.msg) {
         throw new Error(res.msg);
       } else throw new Error("文件上传失败!");
@@ -59,11 +67,13 @@ export default function FileCard({ index, file, removeFile }: Props) {
           )}
         </div>
       </div>
-      <XMarkIcon
-        width={16}
-        onClick={() => removeFile(index)}
-        className="absolute right-0 top-0 translate-y-[-50%] translate-x-1/2 hidden group-hover:block"
-      />
+      {removeFile && (
+        <XMarkIcon
+          width={16}
+          onClick={() => removeFile(index)}
+          className="absolute right-0 top-0 translate-y-[-50%] translate-x-1/2 hidden group-hover:block"
+        />
+      )}
     </div>
   );
 }

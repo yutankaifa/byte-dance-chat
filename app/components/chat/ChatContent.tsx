@@ -27,7 +27,7 @@ export default function ChatContent({ type }: ChatContentType) {
     } else {
       setMessages(store.messages);
     }
-  }, [store]);
+  }, [store, type]);
 
   useEffect(() => {
     const distance =
@@ -128,9 +128,9 @@ export default function ChatContent({ type }: ChatContentType) {
                   {item.images?.map((fileItem, fileIndex) => (
                     <img
                       src={fileItem.base64}
-                      className="w-14 h-14 rounded-3xl "
+                      className="w-14 h-14 rounded-xl "
                       key={fileIndex}
-                      alt=""
+                      alt={fileItem.name}
                     />
                   ))}
                 </div>
@@ -141,12 +141,12 @@ export default function ChatContent({ type }: ChatContentType) {
                     <FileCard
                       key={fileIndex}
                       index={fileIndex}
-                      item={fileItem}
+                      file={fileItem}
                     />
                   ))}
                 </div>
               )}
-              <div className="max-w-lg bg-gray-200 px-4 py-2 rounded-3xl">
+              <div className="max-w-lg bg-gray-200 px-4 py-2 rounded-xl">
                 <pre>{item.text}</pre>
               </div>
             </div>

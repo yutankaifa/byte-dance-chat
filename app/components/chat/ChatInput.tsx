@@ -203,8 +203,10 @@ export default function ChatInput({ type }: ChatContentType) {
   ) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (type == "file") setFiles([...files, { file, name: file.name }]);
-    else if (type == "image") setImages([...images, { file, name: file.name }]);
+    if (type == "file")
+      setFiles([...files, { file, name: file.name }]);
+    else if (type == "image")
+      setImages([...images, { file, name: file.name }]);
     else toast.error("不支持的文件类型");
   };
 
@@ -230,6 +232,11 @@ export default function ChatInput({ type }: ChatContentType) {
                 file={item}
                 index={index}
                 removeFile={() => removeFile(index, "image")}
+                updateFile={(file) => {
+                  const clone_img = cloneDeep(images);
+                  clone_img[index] = file;
+                  setImages(clone_img);
+                }}
               />
             ))}
           </div>
@@ -242,6 +249,11 @@ export default function ChatInput({ type }: ChatContentType) {
                 file={item}
                 index={index}
                 removeFile={() => removeFile(index, "file")}
+                updateFile={(file) => {
+                  const clone_file = cloneDeep(files);
+                  clone_file[index] = file;
+                  setFiles(clone_file);
+                }}
               />
             ))}
           </div>

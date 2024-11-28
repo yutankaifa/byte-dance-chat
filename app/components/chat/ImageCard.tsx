@@ -7,9 +7,15 @@ import { FileInfoInter } from "~/types";
 interface Props {
   file: FileInfoInter;
   index: number;
-  removeFile: (index: number) => void;
+  removeFile?: (index: number) => void;
+  updateFile?: (file: FileInfoInter) => void;
 }
-export default function ImageCard({ file, index, removeFile }: Props) {
+export default function ImageCard({
+  file,
+  index,
+  removeFile,
+  updateFile,
+}: Props) {
   const [item, setItem] = useState<FileInfoInter>();
   const handleUpload = async () => {
     try {
@@ -22,12 +28,14 @@ export default function ImageCard({ file, index, removeFile }: Props) {
       console.log("res", res);
       if (res.code == 0) {
         const { id } = res.data;
-        setItem({
+        const newFile: FileInfoInter = {
           ...file,
           base64,
           file_id: id,
           status: "uploaded",
-        });
+        };
+        setItem(newFile);
+        updateFile?.(newFile);
       } else if (res.msg) {
         throw new Error(res.msg);
       } else {
@@ -49,14 +57,21 @@ export default function ImageCard({ file, index, removeFile }: Props) {
     <div className="hover:opacity-80 rounded-xl border relative" key={index}>
       {item?.status == "uploading" && <p className="p-1">Uploading...</p>}
       {item?.status == "uploaded" && (
-        <img src={item?.base64} className="w-14 h-14" key={index} alt="" />
+        <img
+          src={item?.base64}
+          className="w-14 h-14"
+          key={index}
+          alt={file.name}
+        />
       )}
       {item?.status == "failed" && <p className="text-red-500 p-1">Failed!</p>}
-      <XMarkIcon
-        width={16}
-        onClick={() => removeFile(index)}
-        className="absolute right-0 top-0 translate-y-[-50%] translate-x-1/2 hidden group-hover:block"
-      />
+      {removeFile && (
+        <XMarkIcon
+          width={16}
+          onClick={() => removeFile(index)}
+          className="absolute right-0 top-0 translate-y-[-50%] translate-x-1/2 hidden group-hover:block"
+        />
+      )}
     </div>
   );
 }
