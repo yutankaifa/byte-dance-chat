@@ -63,21 +63,23 @@ export default function ChatInput({ type }: ChatContentType) {
       });
     if (fileList.length > 0) {
       content_type = "object_string";
-      fileList.forEach((fileInfo) =>
-        arr.push({
-          type: "file",
-          file_id: fileInfo.file_id,
-        })
-      );
+      fileList.forEach((fileInfo) => {
+        if (fileInfo.status == "uploaded")
+          arr.push({
+            type: "file",
+            file_id: fileInfo.file_id,
+          });
+      });
     }
     if (imageList.length > 0) {
       content_type = "object_string";
-      imageList.forEach((fileInfo) =>
-        arr.push({
-          type: "image",
-          file_id: fileInfo.file_id,
-        })
-      );
+      imageList.forEach((fileInfo) => {
+        if (fileInfo.status == "uploaded")
+          arr.push({
+            type: "image",
+            file_id: fileInfo.file_id,
+          });
+      });
     }
     return { arr, content_type };
   };
