@@ -167,7 +167,7 @@ export default function ChatInput({ type }: ChatContentType) {
         result.suggestions?.push(data.content);
       } else if (data?.status == "failed") {
         throw new Error(data.last_error!.msg);
-      }
+      } else throw new Error("错误异常，请稍后重试");
     });
   };
   const updateStoreMessage = (user: MessageInter, result?: MessageInter) => {
