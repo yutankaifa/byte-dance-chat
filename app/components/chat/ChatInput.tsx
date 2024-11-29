@@ -11,6 +11,7 @@ import {
   MessageInter,
   object_string_type,
   ResponseMessageType,
+  ResponseRetrieveInter,
 } from "~/types";
 import TextareaAutosize from "react-textarea-autosize";
 import { PaperclipIcon, SendIcon, StopCircleIcon } from "lucide-react";
@@ -26,8 +27,9 @@ import { allowFileList, allowImageList } from "~/utils/file";
 import { PhotoIcon } from "@heroicons/react/24/outline";
 import { ChatError } from "~/utils/error";
 import { cloneDeep } from "lodash-es";
-import { asyncChat } from "~/apis/data";
+import { asyncChat, asyncRetrievePolling } from "~/apis/data";
 import ImageCard from "./ImageCard";
+import { getStorageSetting } from "~/utils/storage";
 
 export default function ChatInput({ type }: ChatContentType) {
   const [prompt, setPrompt] = useState("");
@@ -110,26 +112,43 @@ export default function ChatInput({ type }: ChatContentType) {
       images,
     };
     const result: MessageInter = {
-      role: "assistant",    
+      role: "assistant",
       text: "",
-      suggestions: [],  
+      suggestions: [],
     };
     updateStoreMessage(user, result);
     const newMessage = buildMessage(v);
     const _messages = [...messages, newMessage];
     try {
       const res = await asyncChat(_messages, abort_controller);
+      console.log("res", res);
       const contentType = res.headers.get("Content-Type");
       if (contentType?.includes("text/event-stream")) {
         await handleSSEResponse(res, user, result, _messages);
       } else {
         const jsonData = await res.json();
-        if (jsonData.code == 4100) {
+        if (!getStorageSetting()?.stream && jsonData.code === 0) {
+          const res: ResponseRetrieveInter = await asyncRetrievePolling(
+            jsonData.data.conversation_id,
+            jsonData.data.id
+          );
+          if (res.code !== 0) throw new Error(res.msg || "请求失败");
+          else {
+            const { data } = res;
+            const answer = data.find((item) => item.type === "answer");
+            if (answer) result.text = answer.content;
+            const follow_up = data.filter((item) => item.type === "follow_up");
+            if (follow_up)
+              result.suggestions = follow_up.map((item) => item.content);
+            updateStoreMessage(user, result);
+          }
+        } else if (jsonData.code == 4100) {
           throw new Error("token不正确，请先在设置页面设置正确的 token！！！");
         } else throw new Error(jsonData.msg || "请求失败");
       }
     } catch (err) {
       const error = ChatError.fromError(err);
+      console.log("error", error);
       if (error.message == "BodyStreamBuffer was aborted") return;
       result.error = error.message;
       updateStoreMessage(user, result);
@@ -314,15 +333,19 @@ export default function ChatInput({ type }: ChatContentType) {
               onChange={(e) => setPrompt(e.target.value)}
               onKeyDown={onKeyDown}
               minRows={1}
-              maxRows={5} 
+              maxRows={5}
               autoComplete="off"
               placeholder={"发消息，Shift+Enter换行"}
             />
           </div>
           {isLoading ? (
-            <Button  aria-label="取消回复" onClick={abortChat}>
-              <StopCircleIcon />
-            </Button>
+            getStorageSetting()?.stream ? (
+              <Button aria-label="取消回复" onClick={abortChat}>
+                <StopCircleIcon />
+              </Button>
+            ) : (
+              <Button disabled aria-label="回复中">回复中</Button>
+            )
           ) : (
             <Button
               disabled={!prompt.trim()}

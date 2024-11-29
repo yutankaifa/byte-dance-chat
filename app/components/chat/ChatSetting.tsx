@@ -11,38 +11,31 @@ import { Button } from "../ui/button";
 import { useEffect, useState } from "react";
 import { SettingInter } from "~/types";
 import { getStorageSetting, setStorageSetting } from "~/utils/storage";
-import { toast } from "sonner";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "../ui/tooltip";
+import { Switch } from "../ui/switch";
+import { toast } from "sonner";
 
 export default function ChatSetting() {
+  const [setting, setSetting] = useState<SettingInter>();
+
   useEffect(() => {
     const setting = getStorageSetting();
     setSetting(setting);
   }, []);
-  const [setting, setSetting] = useState<SettingInter>();
   const saveSetting = () => {
     setStorageSetting(setting);
-    window.location.reload();
+    toast.success("保存成功");
   };
   return (
     <div className="flex items-center">
-      <Dialog onOpenChange={() => toast.dismiss()}>
-        <DialogTrigger style={{ height: "30px" }}>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger aria-label="设置">
-                <Cog6ToothIcon width={30} />
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>设置</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+      <Dialog>
+        <DialogTrigger aria-label="设置" style={{ height: "30px" }}>
+          <Cog6ToothIcon width={30} />
         </DialogTrigger>
         <DialogContent className="min-h-[200px] max-w-screen-md rounded-2xl flex flex-col">
           <DialogTitle className="hidden"></DialogTitle>
@@ -61,7 +54,9 @@ export default function ChatSetting() {
             </p>
             <Input
               value={setting?.token}
-              onChange={(e) => setSetting({ token: e.target.value })}
+              onChange={(e) =>
+                setSetting({ ...setting, token: e.target.value })
+              }
               width={300}
               id="token"
               placeholder="pat_bOI..."
@@ -69,6 +64,14 @@ export default function ChatSetting() {
             <p className="text-sm text-gray-500">
               注：该令牌只会保存到本地，不会上传到服务器
             </p>
+            <div className="flex items-center space-x-2">
+              <label htmlFor="stream">是否启用流式输出</label>
+              <Switch
+                id="stream"
+                checked={setting?.stream}
+                onCheckedChange={(e) => setSetting({ ...setting, stream: e })}
+              />
+            </div>
           </div>
           <DialogFooter>
             <Button onClick={saveSetting}>保存</Button>

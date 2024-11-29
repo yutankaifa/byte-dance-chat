@@ -43,4 +43,14 @@ export interface MessageApiInter {
 }
 export interface SettingInter {
   token?: string;
+  stream?: boolean;
+}
+export interface ResponseMessageInter {
+  type: message_type;
+  content: string;
+}
+export interface ResponseRetrieveInter {
+  code: number;
+  data: ResponseMessageInter[];
+  msg: string;
 }

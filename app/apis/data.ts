@@ -1,4 +1,4 @@
-import { MessageApiInter } from "~/types";
+import { MessageApiInter, ResponseRetrieveInter } from "~/types";
 import { getStorageSetting } from "~/utils/storage";
 
 export const bot_id = "7437535058480955442";
@@ -16,7 +16,7 @@ export const asyncChat = async (
     body: JSON.stringify({
       bot_id,
       user_id: "1111",
-      stream: true,
+      stream: getStorageSetting()?.stream,
       auto_save_history: true,
       additional_messages: messages,
     }),
@@ -39,4 +39,52 @@ export const asyncFileUpload = async (file: File) => {
   } catch (err) {
     console.error(err);
   }
+};
+export const asyncRetrievePolling = async (
+  conversation_id: string,
+  chat_id: string
+): Promise<ResponseRetrieveInter> => {
+  return new Promise((resolve, reject) => {
+    const timer = setInterval(async () => {
+      try {
+        const res = await fetch(
+          `${proxy_url}/v3/chat/retrieve?conversation_id=${conversation_id}&chat_id=${chat_id}`,
+          {
+            headers: {
+              Authorization: "Bearer " + getStorageSetting()?.token,
+            },
+          }
+        );
+        const jsonData = await res.json();
+        console.log("jsonData", jsonData);
+
+        if (jsonData.data.status === "completed") {
+          clearInterval(timer);
+          const messageDetail = await (
+            await asyncMessageDetail(conversation_id, chat_id)
+          ).json();
+          resolve(messageDetail);
+        } else if (jsonData.data.status !== "in_progress") {
+          clearInterval(timer);
+          reject(jsonData.msg || "请求失败");
+        }
+      } catch (error) {
+        clearInterval(timer);
+        reject(error);
+      }
+    }, 2000);
+  });
+};
+export const asyncMessageDetail = async (
+  conversation_id: string,
+  chat_id: string
+) => {
+  return await fetch(
+    `${proxy_url}/v3/chat/message/list?conversation_id=${conversation_id}&chat_id=${chat_id}`,
+    {
+      headers: {
+        Authorization: "Bearer " + getStorageSetting()?.token,
+      },
+    }
+  );
 };
