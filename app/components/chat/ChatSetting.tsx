@@ -11,12 +11,6 @@ import { Button } from "../ui/button";
 import { useEffect, useState } from "react";
 import { SettingInter } from "~/types";
 import { getStorageSetting, setStorageSetting } from "~/utils/storage";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "../ui/tooltip";
 import { Switch } from "../ui/switch";
 import { toast } from "sonner";
 
