@@ -1,11 +1,12 @@
 import { MessageApiInter } from "~/types";
 import { getStorageSetting } from "~/utils/storage";
 
-export const auth_key =
-  "pat_bOIFZy7Xv3B630kYQAlG8gTkyy1a6IXkPmHgHz3vytYmNNA240sD7AIlsGbXiLla";
 export const bot_id = "7437535058480955442";
 export const proxy_url = "http://175.178.3.60:8881/api";
-export const asyncChat = async (messages: MessageApiInter[]) => {
+export const asyncChat = async (
+  messages: MessageApiInter[],
+  abort: AbortController
+) => {
   return await fetch(`${proxy_url}/v3/chat`, {
     method: "POST",
     headers: {
@@ -19,6 +20,7 @@ export const asyncChat = async (messages: MessageApiInter[]) => {
       auto_save_history: true,
       additional_messages: messages,
     }),
+    signal: abort.signal,
   });
 };
 export const asyncFileUpload = async (file: File) => {

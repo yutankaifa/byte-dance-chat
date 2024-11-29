@@ -13,7 +13,7 @@ import {
   ResponseMessageType,
 } from "~/types";
 import TextareaAutosize from "react-textarea-autosize";
-import { PaperclipIcon } from "lucide-react";
+import { PaperclipIcon, SendIcon, StopCircleIcon } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -36,6 +36,7 @@ export default function ChatInput({ type }: ChatContentType) {
   const [files, setFiles] = useState<FileInfoInter[]>([]);
   const [images, setImages] = useState<FileInfoInter[]>([]);
   const [messages, setMessages] = useState<MessageApiInter[]>([]);
+  const [abort_controller, setAbortController] = useState<AbortController>();
   const store = useChatStore();
 
   useEffect(() => {
@@ -98,13 +99,10 @@ export default function ChatInput({ type }: ChatContentType) {
     setImages([]);
   };
   const sendMessage = async (v?: string) => {
-    if (isLoading) return;
-    if (!v && !prompt.trim()) {
-      toast.warning("文本不能为空");
-      return;
-    }
     setIsLoading(true);
     resetInput();
+    const abort_controller = new AbortController();
+    setAbortController(abort_controller);
     const user: MessageInter = {
       role: "user",
       text: v || prompt,
@@ -112,15 +110,15 @@ export default function ChatInput({ type }: ChatContentType) {
       images,
     };
     const result: MessageInter = {
-      role: "assistant",
+      role: "assistant",    
       text: "",
-      suggestions: [],
+      suggestions: [],  
     };
     updateStoreMessage(user, result);
     const newMessage = buildMessage(v);
     const _messages = [...messages, newMessage];
     try {
-      const res = await asyncChat(_messages);
+      const res = await asyncChat(_messages, abort_controller);
       const contentType = res.headers.get("Content-Type");
       if (contentType?.includes("text/event-stream")) {
         await handleSSEResponse(res, user, result, _messages);
@@ -132,7 +130,7 @@ export default function ChatInput({ type }: ChatContentType) {
       }
     } catch (err) {
       const error = ChatError.fromError(err);
-      setIsLoading(false);
+      if (error.message == "BodyStreamBuffer was aborted") return;
       result.error = error.message;
       updateStoreMessage(user, result);
     } finally {
@@ -171,6 +169,9 @@ export default function ChatInput({ type }: ChatContentType) {
         throw new Error(data.last_error!.msg);
       }
     });
+  };
+  const abortChat = () => {
+    if (abort_controller) abort_controller.abort();
   };
   const updateStoreMessage = (user: MessageInter, result?: MessageInter) => {
     if (result) {
@@ -313,14 +314,24 @@ export default function ChatInput({ type }: ChatContentType) {
               onChange={(e) => setPrompt(e.target.value)}
               onKeyDown={onKeyDown}
               minRows={1}
-              maxRows={5}
+              maxRows={5} 
               autoComplete="off"
               placeholder={"发消息，Shift+Enter换行"}
             />
           </div>
-          <Button disabled={isLoading} onClick={() => sendMessage()}>
-            {isLoading ? "回复中" : "发送"}
-          </Button>
+          {isLoading ? (
+            <Button  aria-label="取消回复" onClick={abortChat}>
+              <StopCircleIcon />
+            </Button>
+          ) : (
+            <Button
+              disabled={!prompt.trim()}
+              aria-label="发送"
+              onClick={() => sendMessage()}
+            >
+              <SendIcon />
+            </Button>
+          )}
         </div>
       </div>
     </div>

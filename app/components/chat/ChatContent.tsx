@@ -1,7 +1,7 @@
 import { useChatStore } from "~/store";
 import { useEffect, useRef, useState } from "react";
 import { ChatContentType, MessageInter } from "~/types";
-import Markdown from "~/components/chat/Markdown";
+import Markdown from "~/components/markdown";
 import FileCard from "~/components/chat/FileCard";
 import { CheckIcon, ClipboardDocumentIcon } from "@heroicons/react/24/outline";
 import pkg from "react-copy-to-clipboard";
