@@ -23,18 +23,22 @@ export default function Index() {
         async (res) => {
           console.log(res);
           if (res.ok) {
-          const data = await res.json();
-          console.log(data);
-          setStorageSetting({
-            ...getStorageSetting(),
-            access_token: data.access_token,
-            refresh_token: data.refresh_token,
-          });
-          window.location.href = "/";
-        } else {
-          toast.error("授权失败");
+            const data = await res.json();
+            console.log(data);
+            setStorageSetting({
+              ...getStorageSetting(),
+              access_token: data.access_token,
+              refresh_token: data.refresh_token,
+            });
+            toast.success("授权成功");
+          } else {
+            toast.error("授权失败，请重新尝试");
+          }
+          setTimeout(() => {
+            window.location.href = "/";
+          }, 1000);
         }
-      });
+      );
     }
   }, []);
   return (

@@ -116,7 +116,7 @@ export const asyncOAuth = async (code_challenge: string) => {
     query
   ).toString()}`;
 };
-export const asyncOAuthToken = async (code: string, code_verifier?: string) => {
+export const asyncOAuthToken = async (code: string, code_verifier: string) => {
   return await fetch(`${proxy_url}/api/permission/oauth2/token`, {
     method: "POST",
     headers: {

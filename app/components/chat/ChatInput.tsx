@@ -149,6 +149,7 @@ export default function ChatInput({ type }: ChatContentType) {
     } catch (err) {
       const error = ChatError.fromError(err);
       console.log("error", error);
+      // 如果请求被中止，则显示输出部分内容，不显示错误
       if (error.message == "BodyStreamBuffer was aborted") return;
       result.error = error.message;
       updateStoreMessage(user, result);

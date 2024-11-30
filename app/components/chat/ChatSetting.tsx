@@ -36,7 +36,7 @@ export default function ChatSetting() {
     toast.success("保存成功");
   };
   const handleOAuth = async () => {
-    const codeChallenge = await generateCodeChallenge();
+    const codeChallenge = generateCodeChallenge();
     console.log(codeChallenge);
     const res = await asyncOAuth(codeChallenge);
     console.log(res);
