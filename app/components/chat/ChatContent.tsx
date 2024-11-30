@@ -99,7 +99,7 @@ export default function ChatContent({ type }: ChatContentType) {
                   <MdSkeleton />
                 )
               ) : (
-                <div className="text-red-500">{item.error}</div>
+                <p className="text-red-500 break-words">{item.error}</p>
               )}
               {index == messages.length - 1 &&
                 item.suggestions &&
@@ -140,14 +140,13 @@ export default function ChatContent({ type }: ChatContentType) {
                   {item.files?.map((fileItem, fileIndex) => (
                     <FileCard
                       key={fileIndex}
-                      index={fileIndex}
                       file={fileItem}
                     />
                   ))}
                 </div>
               )}
               <div className="max-w-lg bg-gray-200 px-4 py-2 rounded-xl">
-                <pre>{item.text}</pre>
+                <pre className="whitespace-pre-wrap break-words">{item.text}</pre>
               </div>
             </div>
           )}
