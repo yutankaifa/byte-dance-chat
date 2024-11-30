@@ -3,6 +3,10 @@ import ChatInput from "~/components/chat/ChatInput";
 import ChatContent from "~/components/chat/ChatContent";
 import ChatDialog from "~/components/chat/ChatDialog";
 import ChatSetting from "~/components/chat/ChatSetting";
+import { asyncOAuthToken } from "~/apis/data";
+import { useEffect } from "react";
+import { getStorageSetting, setStorageSetting } from "~/utils/storage";
+import { toast } from "sonner";
 
 export const meta: MetaFunction = () => {
   return [
@@ -12,6 +16,27 @@ export const meta: MetaFunction = () => {
 };
 
 export default function Index() {
+  useEffect(() => {
+    const code = new URLSearchParams(window.location.search).get("code");
+    if (code) {
+      asyncOAuthToken(code, getStorageSetting()?.code_verifier).then(
+        async (res) => {
+          console.log(res);
+          if (res.ok) {
+          const data = await res.json();
+          console.log(data);
+          setStorageSetting({
+            ...getStorageSetting(),
+            access_token: data.access_token,
+            refresh_token: data.refresh_token,
+          });
+          window.location.href = "/";
+        } else {
+          toast.error("授权失败");
+        }
+      });
+    }
+  }, []);
   return (
     <div className="max-w-screen-md h-screen overflow-hidden md:mx-auto mx-3">
       <div className="flex justify-between">

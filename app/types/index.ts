@@ -42,8 +42,13 @@ export interface MessageApiInter {
   content_type: content_type;
 }
 export interface SettingInter {
+  bot_id?: string;
   token?: string;
+  refresh_token?: string;
+  access_token?: string;
   stream?: boolean;
+  code_verifier?: string;
+  auth_type?: "one" | "two";
 }
 export interface ResponseMessageInter {
   type: message_type;
