@@ -5,7 +5,11 @@ import ChatDialog from "~/components/chat/ChatDialog";
 import ChatSetting from "~/components/chat/ChatSetting";
 import { asyncOAuthToken } from "~/apis/data";
 import { useEffect } from "react";
-import { getStorageSetting, setStorageSetting } from "~/utils/storage";
+import {
+  getStorageSetting,
+  setStorageSetting,
+  updateTwoToken,
+} from "~/utils/storage";
 import { toast } from "sonner";
 
 export const meta: MetaFunction = () => {
@@ -21,15 +25,9 @@ export default function Index() {
     if (code) {
       asyncOAuthToken(code, getStorageSetting()?.code_verifier).then(
         async (res) => {
-          console.log(res);
           if (res.ok) {
             const data = await res.json();
-            console.log(data);
-            setStorageSetting({
-              ...getStorageSetting(),
-              access_token: data.access_token,
-              refresh_token: data.refresh_token,
-            });
+            updateTwoToken(data.access_token, data.refresh_token);
             toast.success("授权成功");
           } else {
             toast.error("授权失败，请重新尝试");

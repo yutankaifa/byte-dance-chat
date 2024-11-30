@@ -27,9 +27,17 @@ import { allowFileList, allowImageList } from "~/utils/file";
 import { PhotoIcon } from "@heroicons/react/24/outline";
 import { ChatError } from "~/utils/error";
 import { cloneDeep } from "lodash-es";
-import { asyncChat, asyncRetrievePolling } from "~/apis/data";
+import {
+  asyncChat,
+  asyncRefreshToken,
+  asyncRetrievePolling,
+} from "~/apis/data";
 import ImageCard from "./ImageCard";
-import { getStorageSetting } from "~/utils/storage";
+import {
+  getStorageSetting,
+  setStorageSetting,
+  updateTwoToken,
+} from "~/utils/storage";
 
 export default function ChatInput({ type }: ChatContentType) {
   const [prompt, setPrompt] = useState("");
@@ -88,7 +96,6 @@ export default function ChatInput({ type }: ChatContentType) {
   };
   const buildMessage = (v?: string) => {
     const { arr, content_type } = buildContent(v || prompt, files, images);
-    console.log("arr", arr);
     return {
       role: "user",
       content: JSON.stringify(arr),
@@ -119,6 +126,14 @@ export default function ChatInput({ type }: ChatContentType) {
     updateStoreMessage(user, result);
     const newMessage = buildMessage(v);
     const _messages = [...messages, newMessage];
+    await getResonse(_messages, abort_controller, user, result);
+  };
+  const getResonse = async (
+    _messages: MessageApiInter[],
+    abort_controller: AbortController,
+    user: MessageInter,
+    result: MessageInter
+  ) => {
     try {
       const res = await asyncChat(_messages, abort_controller);
       console.log("res", res);
@@ -143,7 +158,18 @@ export default function ChatInput({ type }: ChatContentType) {
             updateStoreMessage(user, result);
           }
         } else if (jsonData.code == 4100) {
-          throw new Error("token不正确，请先在设置页面设置正确的 token！！！");
+          if (getStorageSetting()?.auth_type == "one") {
+            throw new Error("请先在设置页面设置正确的 token！！！");
+          } else {
+            const res = await asyncRefreshToken();
+            if (res.ok) {
+              const data = await res.json();
+              console.log(data);
+              updateTwoToken(data.access_token, data.refresh_token);
+              // 重新发送消息
+              await getResonse(_messages, abort_controller, user, result);
+            }
+          }
         } else throw new Error(jsonData.msg || "请求失败");
       }
     } catch (err) {
@@ -345,7 +371,9 @@ export default function ChatInput({ type }: ChatContentType) {
                 <StopCircleIcon />
               </Button>
             ) : (
-              <Button disabled aria-label="回复中">回复中</Button>
+              <Button disabled aria-label="回复中">
+                回复中
+              </Button>
             )
           ) : (
             <Button
