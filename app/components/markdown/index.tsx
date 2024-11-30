@@ -50,14 +50,23 @@ const Markdown: FC<{ children: string }> = ({ children }) => {
       ]}
       className={`markdown-body markdown-custom-styles !text-base font-normal`}
       components={{
-        a: ({ node, children, ...props }) => {
-          return (
-            <a {...props} target="_blank" rel="noopener noreferrer">
+        a: ({
+          children,
+          href,
+          ...props
+        }: {
+          children: ReactNode;
+          href?: string;
+        }) => {
+          return href?.includes("s.coze.cn") ? (
+            <img className="rounded-xl my-3" src={href} alt="s.coze.cn" />
+          ) : (
+            <a href={href} {...props} target="_blank" rel="noopener noreferrer">
               {children}
             </a>
           );
         },
-        code: ({ node, inline, className, children, ...props }) => {
+        code: ({ inline, className, children, ...props }) => {
           if (inline) {
             return (
               <code
