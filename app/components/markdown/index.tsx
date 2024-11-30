@@ -8,12 +8,6 @@ import remarkBreaks from "remark-breaks";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import supersub from "remark-supersub";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "~/components/ui/tooltip";
 import { ClipboardDocumentIcon } from "@heroicons/react/24/outline";
 import "./highlight.scss";
 import "./markdown.scss";
@@ -56,19 +50,11 @@ const Markdown: FC<{ children: string }> = ({ children }) => {
       ]}
       className={`markdown-body markdown-custom-styles !text-base font-normal`}
       components={{
-        a: ({ node, ...props }) => {
-          if (!props.title) {
-            return <a {...props} />;
-          }
+        a: ({ node, children, ...props }) => {
           return (
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger>{props.title}</TooltipTrigger>
-                <TooltipContent>
-                  <a {...props} title={undefined} />
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+            <a {...props} target="_blank" rel="noopener noreferrer">
+              {children}
+            </a>
           );
         },
         code: ({ node, inline, className, children, ...props }) => {
