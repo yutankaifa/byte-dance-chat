@@ -4,18 +4,19 @@ import { getStorageSetting } from "~/utils/storage";
 export const proxy_url = "http://175.178.3.60:8881/myproxy";
 // const redirect_uri = "http://localhost:5173/";
 const redirect_uri = "http://175.178.3.60:3000/";
+const auth_type = getStorageSetting()?.auth_type;
+const token =
+  auth_type === "one"
+    ? getStorageSetting()?.token
+    : getStorageSetting()?.access_token;
 export const asyncChat = async (
   messages: MessageApiInter[],
   abort: AbortController
 ) => {
-  const auth_type = getStorageSetting()?.auth_type;
   return await fetch(`${proxy_url}/v3/chat`, {
     method: "POST",
     headers: {
-      Authorization:
-        auth_type === "one"
-          ? "Bearer " + getStorageSetting()?.token
-          : "Bearer " + getStorageSetting()?.access_token,
+      Authorization: "Bearer " + token,
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
@@ -38,8 +39,8 @@ export const asyncFileUpload = async (file: File) => {
     const res = await fetch(`${proxy_url}/v1/files/upload`, {
       method: "POST",
       headers: {
-        Authorization: "Bearer " + getStorageSetting()?.token,
-        content_type: "multipart/form-data",
+        Authorization: "Bearer " + token,
+        "Content-Type": "multipart/form-data",
       },
       body: form_data,
     });
@@ -59,7 +60,7 @@ export const asyncRetrievePolling = async (
           `${proxy_url}/v3/chat/retrieve?conversation_id=${conversation_id}&chat_id=${chat_id}`,
           {
             headers: {
-              Authorization: "Bearer " + getStorageSetting()?.token,
+              Authorization: "Bearer " + token,
             },
           }
         );
@@ -91,7 +92,7 @@ export const asyncMessageDetail = async (
     `${proxy_url}/v3/chat/message/list?conversation_id=${conversation_id}&chat_id=${chat_id}`,
     {
       headers: {
-        Authorization: "Bearer " + getStorageSetting()?.token,
+        Authorization: "Bearer " + token,
       },
     }
   );
