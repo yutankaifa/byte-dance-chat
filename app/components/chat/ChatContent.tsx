@@ -128,7 +128,7 @@ export default function ChatContent({ type }: ChatContentType) {
                   {item.images?.map((fileItem, fileIndex) => (
                     <img
                       src={fileItem.base64}
-                      className="w-14 h-14 rounded-xl "
+                      className="w-[200px] h-[200px] rounded-xl "
                       key={fileIndex}
                       alt={fileItem.name}
                     />

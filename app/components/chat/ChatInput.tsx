@@ -31,7 +31,7 @@ import {
   asyncChat,
   asyncRefreshToken,
   asyncRetrievePolling,
-} from "~/apis/data.client";
+} from "~/apis/data";
 import ImageCard from "./ImageCard";
 import {
   getStorageSetting,

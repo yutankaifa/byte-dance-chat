@@ -38,7 +38,10 @@ export const asyncFileUpload = async (file: File) => {
       body: form_data,
     });
     const jsonData = await res.json();
-    if (jsonData.code == 700012006) {
+    if (
+      jsonData.code == 700012006 &&
+      getStorageSetting()?.auth_type === "two"
+    ) {
       const tokenRes = await asyncRefreshToken();
       const tokenData = await tokenRes.json();
       updateTwoToken(tokenData.access_token, tokenData.refresh_token);

@@ -3,7 +3,7 @@ import ChatInput from "~/components/chat/ChatInput";
 import ChatContent from "~/components/chat/ChatContent";
 import ChatDialog from "~/components/chat/ChatDialog";
 import ChatSetting from "~/components/chat/ChatSetting";
-import { asyncOAuthToken } from "~/apis/data.client";
+import { asyncOAuthToken } from "~/apis/data";
 import { useEffect } from "react";
 import { getStorageSetting, updateTwoToken } from "~/utils/storage";
 import { toast } from "sonner";

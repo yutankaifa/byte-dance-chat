@@ -14,7 +14,7 @@ import { getStorageSetting, setStorageSetting } from "~/utils/storage";
 import { Switch } from "../ui/switch";
 import { toast } from "sonner";
 import { generateCodeChallenge } from "~/utils/oauth";
-import { asyncOAuth } from "~/apis/data.client";
+import { asyncOAuth } from "~/apis/data";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import SPopover from "../setting/SPopover";
 

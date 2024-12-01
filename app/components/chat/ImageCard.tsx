@@ -1,7 +1,7 @@
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { asyncFileUpload } from "~/apis/data.client";
+import { asyncFileUpload } from "~/apis/data";
 import { handleFileToBase64 } from "~/utils/file";
 import { FileInfoInter } from "~/types";
 interface Props {
