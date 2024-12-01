@@ -27,13 +27,14 @@ export const asyncChat = async (
 };
 export const asyncFileUpload = async (file: File) => {
   try {
+    console.log("file", file);
+
     const form_data = new FormData();
     form_data.append("file", file);
     const res = await fetch(`${proxy_url}/v1/files/upload`, {
       method: "POST",
       headers: {
         Authorization: "Bearer " + getToken(),
-        "Content-Type": "multipart/form-data",
       },
       body: form_data,
     });
