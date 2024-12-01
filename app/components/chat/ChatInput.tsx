@@ -33,11 +33,7 @@ import {
   asyncRetrievePolling,
 } from "~/apis/data";
 import ImageCard from "./ImageCard";
-import {
-  getStorageSetting,
-  setStorageSetting,
-  updateTwoToken,
-} from "~/utils/storage";
+import { getStorageSetting, updateTwoToken } from "~/utils/storage";
 
 export default function ChatInput({ type }: ChatContentType) {
   const [prompt, setPrompt] = useState("");
@@ -155,7 +151,10 @@ export default function ChatInput({ type }: ChatContentType) {
             const follow_up = data.filter((item) => item.type === "follow_up");
             if (follow_up)
               result.suggestions = follow_up.map((item) => item.content);
-            updateStoreMessage(user, result);
+            setMessages([
+              ..._messages,
+              { role: "assistant", content: result.text } as MessageApiInter,
+            ]);
           }
         } else if (jsonData.code == 4100) {
           if (getStorageSetting()?.auth_type == "one") {
