@@ -27,3 +27,14 @@ export function generateCodeChallenge() {
   // 转换为 Base64URL 编码（替换 + 为 -，/ 为 _，去掉 = 填充）
   return base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 }
+
+export function getToken() {
+  const auth_type = getStorageSetting()?.auth_type;
+  return auth_type === "one" ? getStorageSetting()?.token : getStorageSetting()?.access_token;
+}
+
+export function getBotId() {
+  const auth_type = getStorageSetting()?.auth_type;
+  return auth_type === "one" ? getStorageSetting()?.bot_id : getStorageSetting()?.bot_id2;
+}
+

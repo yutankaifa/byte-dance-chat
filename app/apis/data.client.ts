@@ -1,14 +1,10 @@
 import { MessageApiInter, ResponseRetrieveInter } from "~/types";
-import { getStorageSetting } from "~/utils/storage";
+import { getBotId, getToken } from "~/utils/oauth";
+import { getStorageSetting, updateTwoToken } from "~/utils/storage";
 
 export const proxy_url = "http://175.178.3.60:8881/myproxy";
 // const redirect_uri = "http://localhost:5173/";
 const redirect_uri = "http://175.178.3.60:3000/";
-const auth_type = getStorageSetting()?.auth_type;
-const token =
-  auth_type === "one"
-    ? getStorageSetting()?.token
-    : getStorageSetting()?.access_token;
 export const asyncChat = async (
   messages: MessageApiInter[],
   abort: AbortController
@@ -16,14 +12,11 @@ export const asyncChat = async (
   return await fetch(`${proxy_url}/v3/chat`, {
     method: "POST",
     headers: {
-      Authorization: "Bearer " + token,
+      Authorization: "Bearer " + getToken(),
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      bot_id:
-        auth_type === "one"
-          ? getStorageSetting()?.bot_id
-          : getStorageSetting()?.bot_id2,
+      bot_id: getBotId(),
       user_id: "1111",
       stream: getStorageSetting()?.stream,
       auto_save_history: true,
@@ -39,12 +32,19 @@ export const asyncFileUpload = async (file: File) => {
     const res = await fetch(`${proxy_url}/v1/files/upload`, {
       method: "POST",
       headers: {
-        Authorization: "Bearer " + token,
+        Authorization: "Bearer " + getToken(),
         "Content-Type": "multipart/form-data",
       },
       body: form_data,
     });
-    return await res.json();
+    const jsonData = await res.json();
+    if (jsonData.code == 700012006) {
+      const tokenRes = await asyncRefreshToken();
+      const tokenData = await tokenRes.json();
+      updateTwoToken(tokenData.access_token, tokenData.refresh_token);
+      await asyncFileUpload(file);
+    }
+    return jsonData;
   } catch (err) {
     console.error(err);
   }
@@ -60,7 +60,7 @@ export const asyncRetrievePolling = async (
           `${proxy_url}/v3/chat/retrieve?conversation_id=${conversation_id}&chat_id=${chat_id}`,
           {
             headers: {
-              Authorization: "Bearer " + token,
+              Authorization: "Bearer " + getToken(),
             },
           }
         );
@@ -92,7 +92,7 @@ export const asyncMessageDetail = async (
     `${proxy_url}/v3/chat/message/list?conversation_id=${conversation_id}&chat_id=${chat_id}`,
     {
       headers: {
-        Authorization: "Bearer " + token,
+        Authorization: "Bearer " + getToken(),
       },
     }
   );
