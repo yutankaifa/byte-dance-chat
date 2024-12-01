@@ -43,6 +43,8 @@ export interface MessageApiInter {
 }
 export interface SettingInter {
   bot_id?: string;
+  bot_id2?: string;
+  client_id?: string;
   token?: string;
   refresh_token?: string;
   access_token?: string;

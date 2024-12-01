@@ -1,11 +1,9 @@
 import { MessageApiInter, ResponseRetrieveInter } from "~/types";
 import { getStorageSetting } from "~/utils/storage";
 
-const bot_id = "7437535058480955442";
-export const client_id = "59798530117518048099026093575780.app.coze";
 export const proxy_url = "http://175.178.3.60:8881/myproxy";
-const redirect_uri = "http://localhost:5173/";
-// const redirect_uri = "http://175.178.3.60:3000/";
+// const redirect_uri = "http://localhost:5173/";
+const redirect_uri = "http://175.178.3.60:3000/";
 export const asyncChat = async (
   messages: MessageApiInter[],
   abort: AbortController
@@ -21,7 +19,10 @@ export const asyncChat = async (
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      bot_id: auth_type === "one" ? getStorageSetting()?.bot_id : bot_id,
+      bot_id:
+        auth_type === "one"
+          ? getStorageSetting()?.bot_id
+          : getStorageSetting()?.bot_id2,
       user_id: "1111",
       stream: getStorageSetting()?.stream,
       auto_save_history: true,
@@ -97,7 +98,7 @@ export const asyncMessageDetail = async (
 };
 export const asyncOAuth = async (code_challenge: string) => {
   const query = {
-    client_id,
+    client_id: getStorageSetting()?.client_id,
     response_type: "code",
     redirect_uri,
     state: Math.random().toString(36).substring(2, 15),
@@ -124,7 +125,7 @@ export const asyncOAuthToken = async (code: string, code_verifier: string) => {
     },
     body: JSON.stringify({
       grant_type: "authorization_code",
-      client_id,
+      client_id: getStorageSetting()?.client_id,
       code,
       redirect_uri,
       code_verifier,
@@ -140,7 +141,7 @@ export const asyncRefreshToken = async () => {
     },
     body: JSON.stringify({
       grant_type: "refresh_token",
-      client_id,
+      client_id: getStorageSetting()?.client_id,
       refresh_token,
     }),
   });
