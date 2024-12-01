@@ -16,6 +16,7 @@ import { toast } from "sonner";
 import { generateCodeChallenge } from "~/utils/oauth";
 import { asyncOAuth } from "~/apis/data";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
+import SPopover from "../setting/SPopover";
 
 export default function ChatSetting() {
   const [setting, setSetting] = useState<SettingInter>();
@@ -80,14 +81,7 @@ export default function ChatSetting() {
                       个人访问令牌
                     </a>
                     <span className="px-2">和</span>
-                    <a
-                      target="_blank"
-                      rel="noreferrer"
-                      className="text-blue-500"
-                      href="https://www.coze.cn/docs/guides/quickstart"
-                    >
-                      智能体ID
-                    </a>
+                    <SPopover />
                   </div>
                 </div>
 
@@ -124,14 +118,7 @@ export default function ChatSetting() {
                       客户端ID
                     </a>
                     <span className="px-2">和</span>
-                    <a
-                      target="_blank"
-                      rel="noreferrer"
-                      className="text-blue-500"
-                      href="https://www.coze.cn/docs/guides/quickstart"
-                    >
-                      智能体ID
-                    </a>
+                    <SPopover />
                   </div>
                   <span className="text-red-500">
                     创建OAUTH应用填写 重定向URL：http://175.178.3.60:3000/
