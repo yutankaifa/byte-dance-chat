@@ -1,15 +1,21 @@
 import { MessageApiInter, ResponseRetrieveInter } from "~/types";
-import { getBotId, getToken } from "~/utils/oauth";
+import {
+  getBotId,
+  getIsCnCustomUrl,
+  getToken,
+  getCustomProxyUrl,
+} from "~/utils/oauth";
 import { getStorageSetting, updateTwoToken } from "~/utils/storage";
 
-export const proxy_url = "http://175.178.3.60:8881/myproxy";
+export const cn_proxy_url = "http://175.178.3.60:8881/cnproxy";
+export const ncn_proxy_url = "http://175.178.3.60:8881/ncnproxy";
 // const redirect_uri = "http://localhost:5173/";
 const redirect_uri = "http://175.178.3.60:3000/";
 export const asyncChat = async (
   messages: MessageApiInter[],
   abort: AbortController
 ) => {
-  return await fetch(`${proxy_url}/v3/chat`, {
+  return await fetch(`${getCustomProxyUrl()}/v3/chat`, {
     method: "POST",
     headers: {
       Authorization: "Bearer " + getToken(),
@@ -31,7 +37,7 @@ export const asyncFileUpload = async (file: File) => {
 
     const form_data = new FormData();
     form_data.append("file", file);
-    const res = await fetch(`${proxy_url}/v1/files/upload`, {
+    const res = await fetch(`${getCustomProxyUrl()}/v1/files/upload`, {
       method: "POST",
       headers: {
         Authorization: "Bearer " + getToken(),
@@ -61,7 +67,7 @@ export const asyncRetrievePolling = async (
     const timer = setInterval(async () => {
       try {
         const res = await fetch(
-          `${proxy_url}/v3/chat/retrieve?conversation_id=${conversation_id}&chat_id=${chat_id}`,
+          `${getCustomProxyUrl()}/v3/chat/retrieve?conversation_id=${conversation_id}&chat_id=${chat_id}`,
           {
             headers: {
               Authorization: "Bearer " + getToken(),
@@ -93,7 +99,7 @@ export const asyncMessageDetail = async (
   chat_id: string
 ) => {
   return await fetch(
-    `${proxy_url}/v3/chat/message/list?conversation_id=${conversation_id}&chat_id=${chat_id}`,
+    `${getCustomProxyUrl()}/v3/chat/message/list?conversation_id=${conversation_id}&chat_id=${chat_id}`,
     {
       headers: {
         Authorization: "Bearer " + getToken(),
@@ -123,7 +129,7 @@ export const asyncOAuth = async (code_challenge: string) => {
   ).toString()}`;
 };
 export const asyncOAuthToken = async (code: string, code_verifier: string) => {
-  return await fetch(`${proxy_url}/api/permission/oauth2/token`, {
+  return await fetch(`${getCustomProxyUrl()}/api/permission/oauth2/token`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -139,7 +145,7 @@ export const asyncOAuthToken = async (code: string, code_verifier: string) => {
 };
 export const asyncRefreshToken = async () => {
   const refresh_token = getStorageSetting()?.refresh_token;
-  return await fetch(`${proxy_url}/api/permission/oauth2/token`, {
+  return await fetch(`${getCustomProxyUrl()}/api/permission/oauth2/token`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

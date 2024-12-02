@@ -51,6 +51,7 @@ export interface SettingInter {
   stream?: boolean;
   code_verifier?: string;
   auth_type?: "one" | "two";
+  custom_url?: string;
 }
 export interface ResponseMessageInter {
   type: message_type;

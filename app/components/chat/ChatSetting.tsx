@@ -27,6 +27,7 @@ export default function ChatSetting() {
       const initSetting: SettingInter = {
         auth_type: "one",
         stream: true,
+        custom_url: "https://www.coze.cn/",
       };
       setSetting(initSetting);
       setStorageSetting(initSetting);
@@ -59,7 +60,7 @@ export default function ChatSetting() {
         </DialogTrigger>
         <DialogContent className="min-h-[200px] max-w-screen-md rounded-2xl flex flex-col">
           <DialogTitle className="hidden"></DialogTitle>
-          <div className="flex flex-col gap-3 flex-1">
+          <div className="flex flex-col gap-3 flex-1 text-sm">
             <RadioGroup
               value={setting?.auth_type}
               onValueChange={(value) => {
@@ -160,6 +161,23 @@ export default function ChatSetting() {
                 id="stream"
                 checked={setting?.stream}
                 onCheckedChange={(e) => setSetting({ ...setting, stream: e })}
+              />
+            </div>
+            <div className="flex flex-col gap-2">
+              <p className="text-red-500 text-sm">
+                自定义请求前缀，默认使用 <em>https://www.coze.cn/</em>
+              </p>
+              <p className="text-sm text-gray-500">
+                可填写 <em>https://www.coze.com/</em> {""}
+                但需要获取该网站对应的配置数据
+              </p>
+              <Input
+                value={setting?.custom_url}
+                onChange={(e) =>
+                  setSetting({ ...setting, custom_url: e.target.value })
+                }
+                className="w-[300px]"
+                placeholder="自定义请求前缀..."
               />
             </div>
           </div>
