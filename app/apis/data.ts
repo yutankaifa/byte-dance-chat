@@ -124,9 +124,9 @@ export const asyncOAuth = async (code_challenge: string) => {
   //     method: "GET",
   //   }
   // );
-  window.location.href = `https://www.coze.cn/api/permission/oauth2/authorize?${new URLSearchParams(
-    query
-  ).toString()}`;
+  window.location.href = `${
+    getStorageSetting()?.custom_url
+  }api/permission/oauth2/authorize?${new URLSearchParams(query).toString()}`;
 };
 export const asyncOAuthToken = async (code: string, code_verifier: string) => {
   return await fetch(`${getCustomProxyUrl()}/api/permission/oauth2/token`, {
