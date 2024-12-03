@@ -2,10 +2,10 @@ import { MessageApiInter, ResponseRetrieveInter } from "~/types";
 import { getBotId, getToken, getCustomProxyUrl } from "~/utils/oauth";
 import { getStorageSetting, updateTwoToken } from "~/utils/storage";
 
-export const cn_proxy_url = "http://localhost:8881/cnproxy";
-export const ncn_proxy_url = "http://localhost:8881/ncnproxy";
-const redirect_uri = "http://localhost:5173/";
-// const redirect_uri = "http://175.178.3.60:3000/";
+export const cn_proxy_url = "http://175.178.3.60/cnproxy";
+export const ncn_proxy_url = "http://175.178.3.60/ncnproxy";
+// const redirect_uri = "http://localhost:5173/";
+const redirect_uri = "http://175.178.3.60:3000/";
 export const asyncChat = async (
   messages: MessageApiInter[],
   abort: AbortController
