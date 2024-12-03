@@ -28,9 +28,9 @@ export default function Index() {
           } else {
             toast.error("授权失败，请重新尝试");
           }
-          setTimeout(() => {
-            window.location.href = "/";
-          }, 1000);
+          // setTimeout(() => {
+          //   window.location.href = "/";
+          // }, 1000);
         }
       );
     }
