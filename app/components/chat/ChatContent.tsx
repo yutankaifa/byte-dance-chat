@@ -55,7 +55,11 @@ export default function ChatContent({ type }: ChatContentType) {
   }, [copied]);
 
   const sendMessage = (v: string) => {
-    store.setSendMessageFlag(v);
+    if (type === "inline") {
+      store.setSendMessageFlagInline(v);
+    } else {
+      store.setSendMessageFlag(v);
+    }
   };
   return (
     <div

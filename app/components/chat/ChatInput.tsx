@@ -52,9 +52,16 @@ export default function ChatInput({ type }: ChatContentType) {
   }, []);
 
   useEffect(() => {
-    if (store.sendMessageFlag) sendMessage(store.sendMessageFlag);
+    if (store.sendMessageFlag && type === "page")
+      sendMessage(store.sendMessageFlag);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [store.sendMessageFlag]);
+
+  useEffect(() => {
+    if (store.sendMessageFlagInline && type === "inline")
+      sendMessage(store.sendMessageFlagInline);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [store.sendMessageFlagInline]);
 
   const buildContent = (
     text: string,
@@ -179,6 +186,7 @@ export default function ChatInput({ type }: ChatContentType) {
       updateStoreMessage(user, result);
     } finally {
       if (store.sendMessageFlag) store.setSendMessageFlag("");
+      if (store.sendMessageFlagInline) store.setSendMessageFlagInline("");
       if (result.suggestions?.length == 0) result.suggestions = undefined;
       updateStoreMessage(user, result);
       setIsLoading(false);
