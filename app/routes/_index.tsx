@@ -7,6 +7,7 @@ import { asyncOAuthToken } from "~/apis/data";
 import { useEffect } from "react";
 import { getStorageSetting, updateTwoToken } from "~/utils/storage";
 import { toast } from "sonner";
+import { ChatError } from "~/utils/error";
 
 export const meta: MetaFunction = () => {
   return [
@@ -18,22 +19,27 @@ export const meta: MetaFunction = () => {
 export default function Index() {
   useEffect(() => {
     const code = new URLSearchParams(window.location.search).get("code");
-    if (code) {
-      asyncOAuthToken(code, getStorageSetting()?.code_verifier).then(
-        async (res) => {
-          if (res.ok) {
-            const data = await res.json();
+    const init = async () => {
+      try {
+        if (code) {
+          const res = await asyncOAuthToken(
+            code,
+            getStorageSetting()?.code_verifier
+          );
+          const data = await res.json();
+          if (data.access_token) {
             updateTwoToken(data.access_token, data.refresh_token);
             toast.success("授权成功");
-          } else {
-            toast.error("授权失败，请重新尝试");
-          }
-          // setTimeout(() => {
-          //   window.location.href = "/";
-          // }, 1000);
+            window.location.href = "/";
+          } else throw new Error(data.error_message);
         }
-      );
-    }
+      } catch (error) {
+        console.log("error", error);
+        const err = ChatError.fromError(error);
+        toast.error(err.message);
+      }
+    };
+    init();
   }, []);
   return (
     <div className="max-w-screen-md h-screen overflow-hidden md:mx-auto mx-3">

@@ -161,13 +161,12 @@ export default function ChatInput({ type }: ChatContentType) {
             throw new Error("请先在设置页面设置正确的 token！！！");
           } else {
             const res = await asyncRefreshToken();
-            if (res.ok) {
-              const data = await res.json();
-              console.log(data);
+            const data = await res.json();
+            if (data.access_token) {
               updateTwoToken(data.access_token, data.refresh_token);
               // 重新发送消息
               await getResonse(_messages, abort_controller, user, result);
-            }
+            } else throw new Error(data.error_message);
           }
         } else throw new Error(jsonData.msg || "请求失败");
       }

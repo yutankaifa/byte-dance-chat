@@ -2,9 +2,13 @@ import { MessageApiInter, ResponseRetrieveInter } from "~/types";
 import { getBotId, getToken, getCustomProxyUrl } from "~/utils/oauth";
 import { getStorageSetting, updateTwoToken } from "~/utils/storage";
 
-export const cn_proxy_url = "http://175.178.3.60/cnproxy";
-export const ncn_proxy_url = "http://175.178.3.60/ncnproxy";
+// 国内coze代理地址
+export const cn_proxy_url = "http://175.178.3.60:8881/cnproxy";
+// 国外coze代理地址
+export const ncn_proxy_url = "http://175.178.3.60:8881/ncnproxy";
+// 开发环境
 // const redirect_uri = "http://localhost:5173/";
+// 生产环境
 const redirect_uri = "http://175.178.3.60:3000/";
 export const asyncChat = async (
   messages: MessageApiInter[],
