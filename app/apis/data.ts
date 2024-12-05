@@ -2,13 +2,13 @@ import { MessageApiInter, ResponseRetrieveInter } from "~/types";
 import { getBotId, getToken, getCustomProxyUrl } from "~/utils/oauth";
 import { getStorageSetting, updateTwoToken } from "~/utils/storage";
 
-// 国内coze代理地址
+// Domestic Coze agent address
 export const cn_proxy_url = "http://175.178.3.60:8881/cnproxy";
-// 国外coze代理地址
+// Overseas Coze agent address
 export const ncn_proxy_url = "http://175.178.3.60:8881/ncnproxy";
-// 开发环境
+// dev
 // const redirect_uri = "http://localhost:5173/";
-// 生产环境
+// pro
 const redirect_uri = "http://175.178.3.60:3000/";
 export const asyncChat = async (
   messages: MessageApiInter[],
@@ -84,7 +84,7 @@ export const asyncRetrievePolling = async (
           resolve(messageDetail);
         } else if (jsonData.data.status !== "in_progress") {
           clearInterval(timer);
-          reject(jsonData.msg || "请求失败");
+          reject(jsonData.msg || "Request failed");
         }
       } catch (error) {
         clearInterval(timer);

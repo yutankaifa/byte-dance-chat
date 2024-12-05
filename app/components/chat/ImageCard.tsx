@@ -33,7 +33,7 @@ export default function ImageCard({ file, removeFile, updateFile }: Props) {
       } else if (res.msg) {
         throw new Error(res.msg);
       } else {
-        throw new Error("图片上传失败!");
+        throw new Error("Image upload failed!");
       }
     } catch (error) {
       console.error("Error processing file:", error);

@@ -27,7 +27,7 @@ export default function ChatSetting() {
       const initSetting: SettingInter = {
         auth_type: "one",
         stream: true,
-        custom_url: "https://www.coze.cn/",
+        custom_url: "https://www.coze.com/",
       };
       setSetting(initSetting);
       setStorageSetting(initSetting);
@@ -35,11 +35,11 @@ export default function ChatSetting() {
   }, []);
   const saveSetting = () => {
     setStorageSetting(setting);
-    toast.success("保存成功");
+    toast.success("Save successfully");
   };
   const handleOAuth = async () => {
     if (!setting?.client_id || !setting?.bot_id2) {
-      toast.error("请填写完整客户端ID和智能体ID");
+      toast.error("Please fill in the complete client ID and bot ID");
       return;
     }
     const codeChallenge = generateCodeChallenge();
@@ -55,7 +55,7 @@ export default function ChatSetting() {
   return (
     <div className="flex items-center">
       <Dialog>
-        <DialogTrigger aria-label="设置" style={{ height: "30px" }}>
+        <DialogTrigger aria-label="Setting" style={{ height: "30px" }}>
           <Cog6ToothIcon width={30} />
         </DialogTrigger>
         <DialogContent className="min-h-[200px] max-w-screen-md rounded-2xl flex flex-col">
@@ -71,7 +71,8 @@ export default function ChatSetting() {
             >
               <div className="flex flex-col gap-2 p-2 rounded-lg border">
                 <div className="flex flex-wrap items-center space-x-2">
-                  <RadioGroupItem value="one" /> <p>个人访问令牌：需要提供</p>
+                  <RadioGroupItem value="one" />{" "}
+                  <p>Personal access token: need to provide</p>
                   <div>
                     <a
                       target="_blank"
@@ -79,9 +80,9 @@ export default function ChatSetting() {
                       className="text-blue-500"
                       href="https://www.coze.cn/docs/developer_guides/pat"
                     >
-                      个人访问令牌
+                      Personal access token
                     </a>
-                    <span className="px-2">和</span>
+                    <span className="px-2">and</span>
                     <SPopover />
                   </div>
                 </div>
@@ -101,14 +102,14 @@ export default function ChatSetting() {
                     setSetting({ ...setting, bot_id: e.target.value })
                   }
                   className="w-[300px]"
-                  placeholder="智能体ID..."
+                  placeholder="Bot ID..."
                 />
               </div>
 
               <div className="flex flex-col gap-2 p-2 rounded-lg border">
                 <div className="flex flex-wrap items-center space-x-2">
                   <RadioGroupItem value="two" />
-                  <p>OAuth PKCE 访问令牌：需要提供</p>
+                  <p>OAuth PKCE access token: need to provide</p>
                   <div>
                     <a
                       target="_blank"
@@ -116,13 +117,14 @@ export default function ChatSetting() {
                       className="text-blue-500"
                       href="https://www.coze.cn/docs/developer_guides/oauth_pkce"
                     >
-                      客户端ID
+                      Client ID
                     </a>
-                    <span className="px-2">和</span>
+                    <span className="px-2">and</span>
                     <SPopover />
                   </div>
                   <span className="text-red-500">
-                    创建OAUTH应用填写 重定向URL：http://175.178.3.60:3000/
+                    Create OAUTH application, fill in the redirect URL:
+                    http://175.178.3.60:3000/
                   </span>
                 </div>
                 <Input
@@ -140,23 +142,24 @@ export default function ChatSetting() {
                     setSetting({ ...setting, bot_id2: e.target.value })
                   }
                   className="w-[300px]"
-                  placeholder="智能体ID..."
+                  placeholder="Bot ID..."
                 />
                 <div className="flex items-center space-x-2">
-                  <p>填写完成后点击</p>
+                  <p>After filling in, click</p>
                   <Button className="w-20" onClick={handleOAuth}>
-                    授权
+                    Authorize
                   </Button>
-                  <p>获取访问令牌</p>
+                  <p>Get access token</p>
                 </div>
               </div>
               <p className="text-sm text-gray-500">
-                注：以上数据只会保存到本地，不会上传到服务器
+                Note: The above data will only be saved locally, not uploaded
+                to the server
               </p>
             </RadioGroup>
 
             <div className="flex items-center space-x-2">
-              <label htmlFor="stream">是否启用流式输出</label>
+              <label htmlFor="stream">Enable stream output</label>
               <Switch
                 id="stream"
                 checked={setting?.stream}
@@ -165,11 +168,13 @@ export default function ChatSetting() {
             </div>
             <div className="flex flex-col gap-2">
               <p className="text-red-500 text-sm">
-                自定义请求前缀，默认使用 <em>https://www.coze.cn/</em>
+                Custom request prefix, default using{" "}
+                <em>https://www.coze.com/</em>
               </p>
               <p className="text-sm text-gray-500">
-                可填写 <em>https://www.coze.com/</em> {""}
-                但需要获取该网站对应的配置数据
+                Can fill in <em>https://www.coze.cn/</em> {""}
+                But need to get the corresponding configuration data of the
+                website
               </p>
               <Input
                 value={setting?.custom_url}
@@ -177,13 +182,13 @@ export default function ChatSetting() {
                   setSetting({ ...setting, custom_url: e.target.value })
                 }
                 className="w-[300px]"
-                placeholder="自定义请求前缀..."
+                placeholder="Custom request prefix..."
               />
             </div>
           </div>
           <DialogFooter className="flex justify-end flex-row">
             <Button className="w-20" onClick={saveSetting}>
-              保存
+              Save
             </Button>
           </DialogFooter>
         </DialogContent>

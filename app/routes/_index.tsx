@@ -29,7 +29,7 @@ export default function Index() {
           const data = await res.json();
           if (data.access_token) {
             updateTwoToken(data.access_token, data.refresh_token);
-            toast.success("授权成功");
+            toast.success("Authorization successful");
             window.location.href = "/";
           } else throw new Error(data.error_message);
         }

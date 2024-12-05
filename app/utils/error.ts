@@ -7,9 +7,9 @@ export class ChatError extends Error {
     const errorMessage = error instanceof Error ? error.message : String(error);
 
     if (errorMessage === "Failed to fetch") {
-      return new ChatError("网络连接错误，请检查您的网络设置后重试");
+      return new ChatError("Network connection error, please check your network settings and try again");
     } else if (errorMessage === "signal is aborted without reason") {
-      return new ChatError("已取消回复");
+      return new ChatError("Reply canceled");
     } else if (error instanceof ChatError) {
       return error;
     }

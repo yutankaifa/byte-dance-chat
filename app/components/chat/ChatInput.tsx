@@ -150,7 +150,7 @@ export default function ChatInput({ type }: ChatContentType) {
             jsonData.data.conversation_id,
             jsonData.data.id
           );
-          if (res.code !== 0) throw new Error(res.msg || "请求失败");
+          if (res.code !== 0) throw new Error(res.msg || "Request failed");
           else {
             const { data } = res;
             const answer = data.find((item) => item.type === "answer");
@@ -165,22 +165,24 @@ export default function ChatInput({ type }: ChatContentType) {
           }
         } else if (jsonData.code == 4100) {
           if (getStorageSetting()?.auth_type == "one") {
-            throw new Error("请先在设置页面设置正确的 token！！！");
+            throw new Error(
+              "Please set the correct token in the settings page！！！"
+            );
           } else {
             const res = await asyncRefreshToken();
             const data = await res.json();
             if (data.access_token) {
               updateTwoToken(data.access_token, data.refresh_token);
-              // 重新发送消息
+              // Resend message
               await getResonse(_messages, abort_controller, user, result);
             } else throw new Error(data.error_message);
           }
-        } else throw new Error(jsonData.msg || "请求失败");
+        } else throw new Error(jsonData.msg || "Request failed");
       }
     } catch (err) {
       const error = ChatError.fromError(err);
       console.log("error", error);
-      // 如果请求被中止，则显示输出部分内容，不显示错误
+      // If the request is aborted, display part of the content, do not display the error
       if (error.message == "BodyStreamBuffer was aborted") return;
       result.error = error.message;
       updateStoreMessage(user, result);
@@ -210,7 +212,7 @@ export default function ChatInput({ type }: ChatContentType) {
       try {
         data = JSON.parse(message);
       } catch (err) {
-        throw new Error("解析失败");
+        throw new Error("Parsing failed");
       }
       if (["answer"].includes(data?.type) && !data.created_at) {
         result.text += data?.content;
@@ -261,7 +263,7 @@ export default function ChatInput({ type }: ChatContentType) {
     if (!file) return;
     if (type == "file") setFiles([...files, { file, name: file.name }]);
     else if (type == "image") setImages([...images, { file, name: file.name }]);
-    else toast.error("不支持的文件类型");
+    else toast.error("Unsupported file type");
   };
 
   const removeFile = (index: number, type: object_string_type) => {
@@ -315,7 +317,7 @@ export default function ChatInput({ type }: ChatContentType) {
             <div className="flex items-center justify-center gap-3">
               <TooltipProvider>
                 <Tooltip>
-                  <TooltipTrigger aria-label="选择文件">
+                  <TooltipTrigger aria-label="Select file">
                     <label>
                       <PaperclipIcon width={22} className="cursor-pointer" />
                       <input
@@ -330,13 +332,15 @@ export default function ChatInput({ type }: ChatContentType) {
                     </label>
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p>{"允许上传的文件格式有：" + allowFileList.join(",")}</p>
+                    <p>
+                      {"Allowed file formats: " + allowFileList.join(",")}
+                    </p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
               <TooltipProvider>
                 <Tooltip>
-                  <TooltipTrigger aria-label="选择图片">
+                  <TooltipTrigger aria-label="Select image">
                     <label>
                       <PhotoIcon width={24} className="cursor-pointer" />
                       <input
@@ -351,7 +355,9 @@ export default function ChatInput({ type }: ChatContentType) {
                     </label>
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p>{"允许上传的图片格式有：" + allowImageList.join(",")}</p>
+                    <p>
+                      {"Allowed image formats: " + allowImageList.join(",")}
+                    </p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
@@ -368,23 +374,23 @@ export default function ChatInput({ type }: ChatContentType) {
               minRows={1}
               maxRows={5}
               autoComplete="off"
-              placeholder={"发消息，Shift+Enter换行"}
+              placeholder={"Send message, Shift+Enter to newline"}
             />
           </div>
           {isLoading ? (
             getStorageSetting()?.stream ? (
-              <Button aria-label="取消回复" onClick={abortChat}>
+              <Button aria-label="Cancel reply" onClick={abortChat}>
                 <StopCircleIcon />
               </Button>
             ) : (
-              <Button disabled aria-label="回复中">
-                回复中
+              <Button disabled aria-label="Replying">
+                Replying
               </Button>
             )
           ) : (
             <Button
               disabled={!prompt.trim()}
-              aria-label="发送"
+              aria-label="Send"
               onClick={() => sendMessage()}
             >
               <SendIcon />

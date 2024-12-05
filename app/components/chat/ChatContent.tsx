@@ -92,7 +92,7 @@ export default function ChatContent({ type }: ChatContentType) {
                             </CopyToClipboard>
                           </TooltipTrigger>
                           <TooltipContent>
-                            <p>复制</p>
+                            <p>Copy</p>
                           </TooltipContent>
                         </Tooltip>
                       </TooltipProvider>

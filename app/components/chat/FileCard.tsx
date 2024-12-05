@@ -29,7 +29,7 @@ export default function FileCard({ file, removeFile, updateFile }: Props) {
         updateFile?.(newFile);
       } else if (res.msg) {
         throw new Error(res.msg);
-      } else throw new Error("文件上传失败!");
+      } else throw new Error("File upload failed!");
     } catch (error) {
       toast.error((error as Error).message);
       setItem({
