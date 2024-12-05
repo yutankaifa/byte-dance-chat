@@ -1,40 +1,20 @@
-# Welcome to Remix!
+# Project README
 
-- 📖 [Remix docs](https://remix.run/docs)
+## I. Project Overview
+This front-end project aims to provide users with an efficient and convenient interaction experience.
 
-## Development
+## II. Main Functions
+1. **File Upload**: Users can easily upload various files to meet different business needs.
+2. **Image Upload**: Support image upload to facilitate users to share and display image content.
+3. **Multiple Return Formats**: Support markdown format output for convenient document editing and display. Also support image generation to provide users with a richer visual experience. In addition, question suggestions are provided to help users better interact with the system.
+4. **Stream Output**: Implement stream output to improve data transmission efficiency and allow users to obtain results faster.
+5. **Switch Request Prefix**: Support switching request prefixes to `coze.com` and `coze.cn` to meet the access needs of different users.
+6. **Connect to Coze API**: This project is connected to the Coze API to provide users with stable and reliable services.
+7. **Authentication Methods**: Support personal authentication and OAuth PKCE authentication methods to ensure the security of user data.
 
-Run the dev server:
+## III. Feedback and Support
+If you encounter any problems or have any suggestions during use, please feel free to contact us. You can provide support and feedback in the following ways:
+1. Submit an issue on the project's GitHub page, and we will handle your problem in a timely manner.
+2. Send an email to [yutanchen0417gmail.com], and we will reply to your email as soon as possible.
 
-```shellscript
-npm run dev
-```
-
-## Deployment
-
-First, build your app for production:
-
-```sh
-npm run build
-```
-
-Then run the app in production mode:
-
-```sh
-npm start
-```
-
-Now you'll need to pick a host to deploy it to.
-
-### DIY
-
-If you're familiar with deploying Node applications, the built-in Remix app server is production-ready.
-
-Make sure to deploy the output of `npm run build`
-
-- `build/server`
-- `build/client`
-
-## Styling
-
-This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever css framework you prefer. See the [Vite docs on css](https://vitejs.dev/guide/features.html#css) for more information.
+Thank you for your support and attention!
