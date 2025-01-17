@@ -27,7 +27,7 @@ export default function ChatSetting() {
       const initSetting: SettingInter = {
         auth_type: "one",
         stream: true,
-        custom_url: "https://www.coze.com/",
+        custom_url: "https://www.coze.cn/",
       };
       setSetting(initSetting);
       setStorageSetting(initSetting);
@@ -169,10 +169,10 @@ export default function ChatSetting() {
             <div className="flex flex-col gap-2">
               <p className="text-red-500 text-sm">
                 Custom request prefix, default using{" "}
-                <em>https://www.coze.com/</em>
+                <em>https://www.coze.cn/</em>
               </p>
               <p className="text-sm text-gray-500">
-                Can fill in <em>https://www.coze.cn/</em> {""}
+                Can fill in <em>https://www.coze.com/</em> {""}
                 But need to get the corresponding configuration data of the
                 website
               </p>
