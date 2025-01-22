@@ -278,7 +278,7 @@ export default function ChatInput({ type }: ChatContentType) {
     }
   };
   return (
-    <div className={cn("w-full bg-white")}>
+    <div className={cn("w-full bg-background")}>
       <div className="max-w-screen-md mx-auto bg-gray-100 p-2 rounded-2xl group">
         {images.length > 0 && (
           <div className="flex flex-wrap m-3 gap-3">
