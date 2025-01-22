@@ -279,7 +279,7 @@ export default function ChatInput({ type }: ChatContentType) {
   };
   return (
     <div className={cn("w-full bg-background")}>
-      <div className="max-w-screen-md mx-auto bg-gray-100 p-2 rounded-2xl group">
+      <div className="max-w-screen-md mx-auto bg-secondary p-2 rounded-2xl group">
         {images.length > 0 && (
           <div className="flex flex-wrap m-3 gap-3">
             {images.map((item, index) => (
@@ -313,7 +313,7 @@ export default function ChatInput({ type }: ChatContentType) {
           </div>
         )}
         <div className="flex items-center gap-2">
-          <div className="p-1 rounded-xl bg-gray-100 flex items-center gap-4 flex-1">
+          <div className="p-1 rounded-xl bg-secondary flex items-center gap-4 flex-1">
             <div className="flex items-center justify-center gap-3">
               <TooltipProvider>
                 <Tooltip>

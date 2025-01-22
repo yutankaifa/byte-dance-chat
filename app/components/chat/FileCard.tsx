@@ -45,7 +45,7 @@ export default function FileCard({ file, removeFile, updateFile }: Props) {
   }, []);
   return (
     <div className="relative">
-      <div className="flex gap-2 items-center p-3 rounded-2xl bg-gray-100">
+      <div className="flex gap-2 items-center p-3 rounded-2xl bg-secondary">
         <DocumentTextIcon width={22} />
         <div className="flex flex-col gap-1">
           <p>{item?.name}</p>

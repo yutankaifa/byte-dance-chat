@@ -8,6 +8,8 @@ import { useEffect } from "react";
 import { getStorageSetting, updateTwoToken } from "~/utils/storage";
 import { toast } from "sonner";
 import { ChatError } from "~/utils/error";
+import { ThemeMode } from "~/types";
+import { applyThemeMode } from "~/utils/color-scheme";
 
 export const meta: MetaFunction = () => {
   return [
@@ -18,6 +20,7 @@ export const meta: MetaFunction = () => {
 
 export default function Index() {
   useEffect(() => {
+    applyThemeMode(ThemeMode.Auto);
     const code = new URLSearchParams(window.location.search).get("code");
     const init = async () => {
       try {

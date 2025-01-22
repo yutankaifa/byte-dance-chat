@@ -3,7 +3,8 @@
 @tailwind utilities;
 
 @layer base {
-  :root {
+  html.light {
+    color-scheme: light;
     --background: 0 0% 100%;
     --foreground: 0 0% 3.9%;
     --card: 0 0% 100%;
@@ -30,7 +31,8 @@
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
   }
-  .dark {
+  html.dark {
+    color-scheme: dark;
     --background: 0 0% 3.9%;
     --foreground: 0 0% 98%;
     --card: 0 0% 3.9%;
@@ -55,10 +57,13 @@
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
+    --radius: 0.5rem;
   }
 }
 
-
+* {
+  border-color: hsl(var(--border));
+}
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;
@@ -69,7 +74,7 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background:  rgba(0, 0, 0, 0.1);
+  background: rgba(0, 0, 0, 0.1);
   border-radius: 20px;
   background-clip: content-box;
   border: 1px solid transparent;

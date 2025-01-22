@@ -149,7 +149,7 @@ export default function ChatContent({ type }: ChatContentType) {
                   ))}
                 </div>
               )}
-              <div className="max-w-lg bg-gray-200 px-4 py-2 rounded-xl">
+              <div className="max-w-lg bg-secondary px-4 py-2 rounded-xl">
                 <pre className="whitespace-pre-wrap break-words">{item.text}</pre>
               </div>
             </div>

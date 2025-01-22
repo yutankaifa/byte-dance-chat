@@ -146,7 +146,7 @@ export default function ChatSetting() {
                 />
                 <div className="flex items-center space-x-2">
                   <p>After filling in, click</p>
-                  <Button className="w-20" onClick={handleOAuth}>
+                  <Button className="w-20" onClick={handleOAuth} variant={"secondary"}>
                     Authorize
                   </Button>
                   <p>Get access token</p>
@@ -187,7 +187,7 @@ export default function ChatSetting() {
             </div>
           </div>
           <DialogFooter className="flex justify-end flex-row">
-            <Button className="w-20" onClick={saveSetting}>
+            <Button className="w-20" onClick={saveSetting} variant={"secondary"}>
               Save
             </Button>
           </DialogFooter>
